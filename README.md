@@ -1,6 +1,6 @@
 # 「Sum」
 **𝕃𝕆𝔾𝕆𝕊** is a little util for rendering custom text out of given char-based psuedographics.  
-Initially developed as service 1-shot script, it's eventually grown into actual GUI-powered app.
+Initially developed as service 1-shot script, it eventually grew into actual GUI-powered app.
 
 # 「Reassembling」
 __𝕃𝕆𝔾𝕆𝕊__ was written entirelly in [Boo v0.9.7.0](https://github.com/boo-lang/boo) with auxiliary `rebuild.cmd` script provided in _Shell_.  
