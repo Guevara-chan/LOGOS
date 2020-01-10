@@ -161,11 +161,13 @@ class UI():
 						<Button		VerticalAlignment="Top" Grid.Row="0" Grid.Column="2" Name="btnShapeFnt"
 							Margin="0,3,5,3" Height="21" Content="Sylfaen: 20"/>
 					<Label HorizontalAlignment="Right" Content="ASCII:" Grid.Row="1"/>
-						<TextBox	Grid.Row="1" Grid.Column="1" Name="iASCII"		Margin="0,3,5,3" Text="01"/>
+						<TextBox	Grid.Row="1" Grid.Column="1" Name="iASCII"		Margin="0,3,5,3" 
+							Text="▓▒░▒"/>
 						<Button		Grid.Row="1" Grid.Column="2" Name="btnFillFnt"	Margin="0,3,5,3" Height="21"
 							Content="Consolas: 7"/>
 					<Label HorizontalAlignment="Right" Content="Noise:" Grid.Row="2"/>
-						<TextBox	Grid.Row="2" Grid.Column="1" Name="iNoise"		Margin="0,3,5,3" Text="0"/>
+						<TextBox	Grid.Row="2" Grid.Column="1" Name="iNoise"		Margin="0,3,5,3" 
+							Text="1101000101001100100100"/>
 						<Button		Grid.Row="2" Grid.Column="2" Name="btnNoiseClr"	Margin="0,3,5,3" Height="21" 
 							Content="#191919" FontFamily="Sylfaen Bold" FontSize = "14" Background="Black"
 							BorderBrush="Pink" Foreground="#191919">
