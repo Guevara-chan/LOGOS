@@ -170,7 +170,7 @@ class UI():
 							Text="1101000101001100100100"/>
 						<Button		Grid.Row="2" Grid.Column="2" Name="btnNoiseClr"	Margin="0,3,5,3" Height="21" 
 							Content="#191919" FontFamily="Sylfaen Bold" FontSize = "14" Background="Black"
-							BorderBrush="Pink" Foreground="#191919">
+							BorderBrush="Cyan" Foreground="#191919">
 							<Button.Style>
 								<Style TargetType="{x:Type Button}">
 							  		<Setter Property="Template">
