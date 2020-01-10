@@ -5,7 +5,7 @@ Initially developed as service 1-shot script, it eventually grew into actual GUI
 # 「Featuræ」
 * Zero external dependencies.
 * Single `XCopy` required to install.
-* Ifinite vintage ASCII beauty.
+* Infinite nostalgy-inducing ASCII beauty.
 
 # 「Reassembling」
 __𝕃𝕆𝔾𝕆𝕊__ was written entirelly in [Boo v0.9.7.0](https://github.com/boo-lang/boo) with auxiliary `rebuild.cmd` script provided in _Shell_.  
