@@ -1,2 +1,2 @@
 # LOGOS
-「text-2-text art renderer」
+「Text-2-ASCIIart renderer」
