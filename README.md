@@ -2,7 +2,7 @@
 **𝕃𝕆𝔾𝕆𝕊** in a little util for rendering custom text out of given char-based psuedographics.
 
 # 「Reassembling」
-__𝕃𝕆𝔾𝕆𝕊__ was written entirelly in [Boo v0.9.7.0](https://github.com/boo-lang/boo) with auxiliary build script provided in _Shell_.  
+__𝕃𝕆𝔾𝕆𝕊__ was written entirelly in [Boo v0.9.7.0](https://github.com/boo-lang/boo) with `rebuild.cmd` script provided in _Shell_.  
 It requires .NET 4.0 framework to run, though confirmed as being mostly compatible with [Mono 4.6.2+](https://github.com/mono/mono).
 
 # 「Brief samples of ASCII calligraphy」
