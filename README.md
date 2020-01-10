@@ -1,7 +1,7 @@
 # 「Sum」
 **𝕃𝕆𝔾𝕆𝕊** is a little util for rendering custom text out of given char-based psuedographics.  
 Initially developed as service 1-shot script, it eventually grew into actual GUI-powered app.
-__Latest version:__ https://github.com/Guevara-chan/LOGOS/releases/download/0.03/UniGrab.zip (direct link)
+__Latest version:__ https://github.com/Guevara-chan/LOGOS/releases/download/0.01/LOGOS.zip (direct link)
 
 # 「Featuræ」
 * Zero external dependencies.
