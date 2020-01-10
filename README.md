@@ -1,2 +1,2 @@
 # LOGOS
-「Render text from your text」
+「text-2-text art renderer」
