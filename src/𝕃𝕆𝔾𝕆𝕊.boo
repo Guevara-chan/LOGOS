@@ -143,7 +143,50 @@ class UI():
 			<Window 
 				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.01]=" Height="150" Width="400" WindowStartupLocation="CenterScreen">
+				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.01]=" Height="150" Width="400" WindowStartupLocation="CenterScreen"
+				Background="#1E1E1E">
+				<Window.Resources>
+					<Style TargetType="Button">
+						<Setter Property="Foreground"			Value="AntiqueWhite" />
+						<Setter Property="Background" Value="Transparent" />
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="Button">
+									<Border Name="border" Background="{TemplateBinding Background}"
+                                		BorderThickness="{TemplateBinding BorderThickness}"
+                                			BorderBrush="{TemplateBinding BorderBrush}">
+										<ContentPresenter Content="{TemplateBinding Content}"
+											HorizontalAlignment="Center" VerticalAlignment="Center"/>
+									</Border>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+						<Style.Triggers>
+							<Trigger Property="IsMouseOver"	Value="True">
+								<Trigger.EnterActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<ColorAnimation Storyboard.TargetProperty="Background.Color"
+												Duration="0:0:0.2" To="DarkCyan" />
+											<ColorAnimation Storyboard.TargetProperty="BorderBrush.Color"
+												Duration="0:0:0.2" To="DarkTurquoise" />
+										</Storyboard>
+									</BeginStoryboard>
+								</Trigger.EnterActions>
+								<Trigger.ExitActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<ColorAnimation	Storyboard.TargetProperty="Background.Color"
+												Duration="0:0:0.2" />
+											<ColorAnimation	Storyboard.TargetProperty="BorderBrush.Color"
+												Duration="0:0:0.2" />
+										</Storyboard>
+									</BeginStoryboard>
+								</Trigger.ExitActions>
+							</Trigger>
+						</Style.Triggers>
+					</Style>
+				</Window.Resources>
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition />
@@ -156,35 +199,25 @@ class UI():
 						<ColumnDefinition Width="*"	/>
 						<ColumnDefinition Width="170"/>
 					</Grid.ColumnDefinitions>	
-					<Label HorizontalAlignment="Right" VerticalAlignment="Top" Content="Slogan:"/>
+					<Label HorizontalAlignment="Right" VerticalAlignment="Top" Content="Slogan:" Foreground="Coral"/>
 						<TextBox	VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Name="iSlogan"
-							Margin="0,3,5,6" Text="I am error" AcceptsReturn="True" TextWrapping="Wrap"/>
-						<Button		VerticalAlignment="Top" Grid.Row="0" Grid.Column="2" Name="btnShapeFnt"
-							Margin="0,3,5,3" Height="21" Content="Sylfaen: 20"/>
-					<Label HorizontalAlignment="Right" Content="ASCII:" Grid.Row="1"/>
+							Margin="0,3,5,6" Text="I am error" AcceptsReturn="True" TextWrapping="Wrap"
+							Background="Black" Foreground="Gold"/>
+						<Button		VerticalAlignment="Top" Grid.Row="0" Grid.Column="2" Name="btnShapeFnt" 
+							Margin="0,3,5,3" Height="21" Content="Sylfaen: 20" />
+					<Label HorizontalAlignment="Right" Content="ASCII:" Grid.Row="1" Foreground="Coral"/>
 						<TextBox	Grid.Row="1" Grid.Column="1" Name="iASCII"		Margin="0,3,5,3" 
-							Text="▓▒░▒"/>
+							Text="▓▒░▒" Background="Black" Foreground="Gold"/>
 						<Button		Grid.Row="1" Grid.Column="2" Name="btnFillFnt"	Margin="0,3,5,3" Height="21"
-							Content="Consolas: 7"/>
-					<Label HorizontalAlignment="Right" Content="Noise:" Grid.Row="2"/>
+							Content="Consolas: 7" />
+					<Label HorizontalAlignment="Right" Content="Noise:" Grid.Row="2" Foreground="Coral"/>
 						<TextBox	Grid.Row="2" Grid.Column="1" Name="iNoise"		Margin="0,3,5,3" 
-							Text="1101000101001100100100"/>
+							Text="1101000101001100100100"  Background="Black" Foreground="Gold"/>
 						<Button		Grid.Row="2" Grid.Column="2" Name="btnNoiseClr"	Margin="0,3,5,3" Height="21" 
-							Content="#191919" FontFamily="Sylfaen Bold" FontSize = "14" Background="Black"
-							BorderBrush="Cyan" Foreground="#191919">
+							Content="#191919" FontFamily="Sylfaen Bold" FontSize="14" Background="Black"
+							BorderBrush="Cyan" Foreground="#191919" BorderThickness="2">
 							<Button.Style>
 								<Style TargetType="{x:Type Button}">
-							  		<Setter Property="Template">
-                        				<Setter.Value>
-                            				<ControlTemplate TargetType="{x:Type Button}">
-                                				<Border Name="border" Background="{TemplateBinding Background}"
-                                					BorderThickness="2" BorderBrush="{TemplateBinding BorderBrush}">
-                                    				<ContentPresenter HorizontalAlignment="Center" 
-                                    					VerticalAlignment="Center" Name="content"/>
-                                				</Border>
-                            				</ControlTemplate>
-                        				</Setter.Value>
-                    				</Setter>
                     				<Style.Triggers>
 										<Trigger Property="IsMouseOver"	Value="True">
 											<Trigger.EnterActions>
@@ -212,10 +245,11 @@ class UI():
 							 	</Style>
 							</Button.Style>
 						</Button>
-					<Label HorizontalAlignment="Right" Content="Out:" Grid.Row="3"/>
-						<TextBox	Grid.Row="3" Grid.Column="1" Name="iPath" Margin="0,3,5,3" Text="Output.png"/>
+					<Label HorizontalAlignment="Right" Content="Out:" Grid.Row="3" Foreground="Coral"/>
+						<TextBox	Grid.Row="3" Grid.Column="1" Name="iPath" Margin="0,3,5,3" Text="Output.png"
+							 Background="Black" Foreground="Gold"/>
 						<Button		 VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="2" Name="btnRender"
-						  	Margin="0,3,5,3" Content="Render !"/>
+						  	Margin="0,0,5,3" Content="Render !" Height = "21" />
 				</Grid>
 			</Window>
 		""")
