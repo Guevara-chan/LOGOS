@@ -101,17 +101,17 @@ class UI():
 				fill_font:	str2font(find_child('btnFillFnt').Content)
 			).done().Save(find_child('iPath').Text as String)}
 		find_button('btnShapeFnt').Click	+= {e|
-			fxcontrol.Background = color2brush(askfont('btnShapeFnt', brush2color(fxcontrol.Background)))}
+			fxcontrol.Background = color2brush(askfont('btnShapeFnt', brush2color(fxcontrol.Background), false))}
 		find_button('btnFillFnt').Click		+= {e|
-			fxcontrol.BorderBrush = color2brush(askfont('btnFillFnt', brush2color(fxcontrol.BorderBrush)))}
+			fxcontrol.BorderBrush = color2brush(askfont('btnFillFnt', brush2color(fxcontrol.BorderBrush), true))}
 		find_button('btnNoiseClr').Click	+= {e|askcolor('btnNoiseClr')}
 		form.ShowDialog()
 
 	def find_child(id as string) as duck:
 		return form.FindName(id)
 
-	def askfont(id as string, def_color as Color):
-		dlg = FontDialog(ShowColor: true, Color: def_color, Font: str2font(find_child(id).Content))
+	def askfont(id as string, def_color as Color, mono as bool):
+		dlg = FontDialog(ShowColor: true, Color: def_color, Font: str2font(find_child(id).Content), FixedPitchOnly:mono)
 		if dlg.ShowDialog() != DialogResult.Cancel: find_child(id).Content = dlg.Font.font2str()
 		return dlg.Color
 
