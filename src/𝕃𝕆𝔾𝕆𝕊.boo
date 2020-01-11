@@ -11,6 +11,7 @@ import System.Runtime.CompilerServices
 import System.Windows.Markup from 'PresentationFramework.dll'
 import System.Windows.Media from 'PresentationCore.dll' as SWM
 
+#.{ [Classes]
 class ASCII_logo():
 	public shape_font							= Font("Sylfaen", 20)
 	public fill_font							= Font("Consolas", 7, FontStyle.Bold)
@@ -77,7 +78,7 @@ class ASCII_logo():
 			val = text
 		def next():
 			return val[idx = (idx+1) % val.Length]
-# ------ #
+# -------------------- #
 class UI():
 	def constructor():
 		# Aux functions.
@@ -218,6 +219,7 @@ class UI():
 				</Grid>
 			</Window>
 		""")
+#.}
 
 # ==Main code==
 [STAThread] def Main():
