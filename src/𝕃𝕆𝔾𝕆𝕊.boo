@@ -1,5 +1,5 @@
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.01 #
+# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.02 #
 # Developed in 2020 by Victoria Guevara #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
@@ -186,6 +186,10 @@ class UI():
 							</Trigger>
 						</Style.Triggers>
 					</Style>
+					<Style TargetType="TextBox">
+						<Setter Property="Foreground"			Value="Gold" />
+						<Setter Property="Background" Value="Black" />
+					</Style>
 				</Window.Resources>
 				<Grid>
 					<Grid.RowDefinitions>
@@ -201,41 +205,60 @@ class UI():
 					</Grid.ColumnDefinitions>	
 					<Label HorizontalAlignment="Right" VerticalAlignment="Top" Content="Slogan:" Foreground="Coral"/>
 						<TextBox	VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Name="iSlogan"
-							Margin="0,3,5,6" Text="I am error" AcceptsReturn="True" TextWrapping="Wrap"
-							Background="Black" Foreground="Gold"/>
+							Margin="0,3,5,6" Text="I am error" AcceptsReturn="True" TextWrapping="Wrap" />
 						<Button		VerticalAlignment="Top" Grid.Row="0" Grid.Column="2" Name="btnShapeFnt" 
 							Margin="0,3,5,3" Height="21" Content="Sylfaen: 20" />
 					<Label HorizontalAlignment="Right" Content="ASCII:" Grid.Row="1" Foreground="Coral"/>
 						<TextBox	Grid.Row="1" Grid.Column="1" Name="iASCII"		Margin="0,3,5,3" 
-							Text="▓▒░▒" Background="Black" Foreground="Gold"/>
+							Text="▓▒░▒" />
 						<Button		Grid.Row="1" Grid.Column="2" Name="btnFillFnt"	Margin="0,3,5,3" Height="21"
 							Content="Consolas: 7" />
 					<Label HorizontalAlignment="Right" Content="Noise:" Grid.Row="2" Foreground="Coral"/>
 						<TextBox	Grid.Row="2" Grid.Column="1" Name="iNoise"		Margin="0,3,5,3" 
-							Text="1101000101001100100100"  Background="Black" Foreground="Gold"/>
+							Text="1101000101001100100100" />
 						<Button		Grid.Row="2" Grid.Column="2" Name="btnNoiseClr"	Margin="0,3,5,3" Height="21" 
 							Content="#191919" FontFamily="Sylfaen Bold" FontSize="14" Background="Black"
 							BorderBrush="Cyan" Foreground="#191919" BorderThickness="2">
 							<Button.Style>
 								<Style TargetType="{x:Type Button}">
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="Button">
+												<Border Name="border" Background="{TemplateBinding Background}"
+			                                		BorderThickness="{TemplateBinding BorderThickness}"
+			                                			BorderBrush="{TemplateBinding BorderBrush}">
+													<ContentPresenter Content="{TemplateBinding Content}"
+														HorizontalAlignment="Center" VerticalAlignment="Center"/>
+												</Border>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
                     				<Style.Triggers>
 										<Trigger Property="IsMouseOver"	Value="True">
 											<Trigger.EnterActions>
 												<BeginStoryboard>
 													<Storyboard>
+														<ColorAnimation Storyboard.TargetProperty="Foreground.Color"
+															Duration="0:0:0.2" To="AntiqueWhite" />
 														<ColorAnimation Storyboard.TargetProperty="Background.Color"
-															Duration="0:0:0.2" To="Transparent " />
+															Duration="0:0:0.2" To="DarkCyan" />
 														<ColorAnimation Storyboard.TargetProperty="BorderBrush.Color"
-															Duration="0:0:0.2" To="Gray" />
+															Duration="0:0:0.2" To="DarkTurquoise" />
+														<ThicknessAnimation Storyboard.TargetProperty="BorderThickness"
+															Duration="0:0:0.2" To="1" />
 													</Storyboard>
 												</BeginStoryboard>
 											</Trigger.EnterActions>
 											<Trigger.ExitActions>
 												<BeginStoryboard>
 													<Storyboard>
-														<ColorAnimation	Storyboard.TargetProperty="Background.Color"
+														<ColorAnimation	Storyboard.TargetProperty="Foreground.Color"
+															Duration="0:0:0.2" />
+														<ColorAnimation Storyboard.TargetProperty="Background.Color"
 															Duration="0:0:0.2" />
 														<ColorAnimation	Storyboard.TargetProperty="BorderBrush.Color"
+															Duration="0:0:0.2" />
+														<ThicknessAnimation Storyboard.TargetProperty="BorderThickness"
 															Duration="0:0:0.2" />
 													</Storyboard>
 												</BeginStoryboard>
@@ -246,8 +269,7 @@ class UI():
 							</Button.Style>
 						</Button>
 					<Label HorizontalAlignment="Right" Content="Out:" Grid.Row="3" Foreground="Coral"/>
-						<TextBox	Grid.Row="3" Grid.Column="1" Name="iPath" Margin="0,3,5,3" Text="Output.png"
-							 Background="Black" Foreground="Gold"/>
+						<TextBox	Grid.Row="3" Grid.Column="1" Name="iPath" Margin="0,3,5,3" Text="Output.png" />
 						<Button		 VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="2" Name="btnRender"
 						  	Margin="0,0,5,3" Content="Render !" Height = "21" />
 				</Grid>
