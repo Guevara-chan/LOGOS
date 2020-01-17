@@ -36,8 +36,7 @@ class ASCII_logo():
 		render	= Graphics.FromImage(img)
 		render.DrawString(text, font, SolidBrush(Color.Black), PointF(sizing.Width / 2, sizing.Height / 2), sf)
 		# Finalization.
-		edges = img.find_edges(Color.FromArgb(0), 5, 3)
-		return img.Clone(Rectangle(edges[0], edges[1], edges[2], edges[3]), img.PixelFormat)
+		return img.Clone(img.find_edges(Color.FromArgb(0), 5, 3), img.PixelFormat)
 
 	[Extension] static def scan_ascii(ref_img as Bitmap, char_pools as Tuple[of string, string]):
 		# Service objects preparation.		
@@ -71,7 +70,7 @@ class ASCII_logo():
 		# Additional bg noise render.
 		if ascii.Item2:	render.DrawString(ascii.Item2, font, SolidBrush(palette.Item3), loc, sf)
 		# Finalization.
-		return img.Clone(Rectangle(0, 0, img.find_edges(palette.Item2,1,0)[2], img.Height), img.PixelFormat)
+		return img.Clone(Rectangle(0, 0, img.find_edges(palette.Item2,1,0).Width, img.Height), img.PixelFormat)
 
 	[Extension] static def find_edges(img as Bitmap, bg_color as Color, v_fields as int, h_fields as int):
 		# Service objects preparation.
@@ -94,7 +93,7 @@ class ASCII_logo():
 			vl_edge = vl_scan if vl_scan < vl_edge
 			vr_edge = vr_scan if vr_scan > vr_edge
 		# Finalization
-		return (vl_edge-v_fields, hu_edge-h_fields, vr_edge-vl_edge+1+v_fields*2, hb_edge-hu_edge+1+h_fields*2)
+		return Rectangle(vl_edge-v_fields,hu_edge-h_fields,vr_edge-vl_edge+1+v_fields*2,hb_edge-hu_edge+1+h_fields*2)
 
 	[Extension] static def pixel_arr(img as Bitmap):
 		# Service objects preparation.
