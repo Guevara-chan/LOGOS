@@ -36,7 +36,7 @@ class ASCII_logo():
 		render	= Graphics.FromImage(img)
 		render.DrawString(text, font, SolidBrush(Color.Black), PointF(sizing.Width / 2, sizing.Height / 2), sf)
 		# Finalization.
-		edges = img.find_edges(Color.FromArgb(0), 5, 3)
+		edges = img.find_edges(Color.FromArgb(0), 4, 3)
 		return img.Clone(Rectangle(edges[0], edges[1], edges[2], edges[3]), img.PixelFormat)
 
 	[Extension] static def scan_ascii(ref_img as Bitmap, char_pools as Tuple[of string, string]):
