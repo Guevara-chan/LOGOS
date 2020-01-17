@@ -175,7 +175,7 @@ class UI():
 				Background="#1E1E1E">
 				<Window.Resources>
 					<Style TargetType="Button">
-						<Setter Property="Foreground"			Value="AntiqueWhite" />
+						<Setter Property="Foreground" Value="AntiqueWhite" />
 						<Setter Property="Background" Value="Transparent" />
 						<Setter Property="Template">
 							<Setter.Value>
