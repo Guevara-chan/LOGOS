@@ -92,11 +92,11 @@ class ASCII_logo():
 					vr_scan = x
 					vl_scan = x unless vl_scan < img_width
 			if vr_scan:
+				hb_edge = y if y > hb_edge
 				hu_edge = y unless hu_edge < img_height
 			vl_edge = vl_scan if vl_scan < vl_edge
 			vr_edge = vr_scan if vr_scan > vr_edge
 		# Finalization.
-		print vl_edge
 		return (vl_edge, vr_edge, hu_edge, hb_edge)
 
 	[Extension] static def pixel_arr(img as Bitmap):
