@@ -21,7 +21,6 @@ class ASCII_logo():
 	public text_pool							= "01"
 	public noise_pool							= "0"
 	public slogan								= "I am error"
-	private static final edge_factor			= 2
 
 	# --Methods goes here.
 	def done():
@@ -59,7 +58,8 @@ class ASCII_logo():
 	[Extension]
 	static def render_ascii(ascii as Tuple[of string,string], palette as Tuple[of Color,Color,Color], font as Font):
 		# Service objects preparation.
-		sf		= StringFormat(StringFormatFlags.MeasureTrailingSpaces, Alignment: StringAlignment.Center)
+		sf			= StringFormat(StringFormatFlags.MeasureTrailingSpaces, Alignment: StringAlignment.Center)
+		edge_factor	= 2
 		# Image and render setup.
 		sizing	= Graphics.FromImage(Bitmap(1, 1)).MeasureString(ascii.Item1, font, PointF(), sf)
 		img		= Bitmap(sizing.Width, sizing.Height)
@@ -77,12 +77,9 @@ class ASCII_logo():
 		# Service objects preparation.
 		img_width	= img.Width
 		img_height	= img.Height
-		vl_edge		= img_width
-		vr_edge		= 0
-		hu_edge		= img_height
-		hb_edge		= 0
 		mark        = bg_color.ToArgb()
-		pixels as (Int32), row_len as int = img.pixel_arr()
+		pixels as (Int32), row_len as int	= img.pixel_arr()
+		vl_edge, vr_edge, hu_edge, hb_edge	= (img_width, 0, img_height, 0)
 		# Edge detection.
 		for y in range(0, img_height):
 			vl_scan = img_width
