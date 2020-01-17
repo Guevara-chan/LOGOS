@@ -44,10 +44,11 @@ class ASCII_logo():
 		ascii		= Text.StringBuilder(); noise = Text.StringBuilder()
 		ascii_gen	= EndlessString(char_pools.Item1)
 		noise_gen	= EndlessString(char_pools.Item2) if char_pools.Item2
+		pixels as (Int32), row_len as int = ref_img.pixel_arr()
 		# Reference image to ASCII conversion.
 		for y in range(ref_img.Height):
 			for x in range(ref_img.Width):
-				pixel_found = ref_img.GetPixel(x, y).A	# Opaque -> found.
+				pixel_found = pixels[y * row_len + x] != 0 # Opaque -> found.
 				ascii.Append((ascii_gen.next() if		pixel_found else " "))
 				noise.Append((noise_gen.next() if not	pixel_found else " ")) unless noise_gen is null
 			noise.AppendLine() unless noise_gen is null
