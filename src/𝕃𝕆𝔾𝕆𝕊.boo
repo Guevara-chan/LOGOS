@@ -71,22 +71,27 @@ class ASCII_logo():
 		# Additional bg noise render.
 		if ascii.Item2:	render.DrawString(ascii.Item2, font, SolidBrush(palette.Item3), loc, sf)
 		# Finalization.
-		return img.Clone(Rectangle(0, 0, img.vert_edge(palette.Item2)+edge_factor, img.Height), img.PixelFormat)
+		return img.Clone(Rectangle(0, 0, img.find_edges(palette.Item2)[1]+edge_factor, img.Height), img.PixelFormat)
 
-	[Extension] static def vert_edge(img as Bitmap, bg_color as Color):
+	[Extension] static def find_edges(img as Bitmap, bg_color as Color):
 		# Service objects preparation.
-		max_edge	= 0
 		img_width	= img.Width
+		vl_edge		= img_width-1
+		vr_edge		= 0
 		mark        = bg_color.ToArgb()
 		pixels as (Int32), row_len as int = img.pixel_arr()
 		# Edge detection.
 		for y in range(0, img.Height):
-			edge = 0
+			vl_scan = img_width
+			vr_scan = 0
 			for x in range(0, img_width):
-				edge = x if pixels[y * row_len + x] != mark
-			max_edge = edge if edge > max_edge
+				if pixels[y * row_len + x] != mark:
+					vr_scan = x
+					vl_scan = x unless vl_scan < img_width
+			vl_edge = vl_scan if vl_scan < vl_edge
+			vr_edge = vr_scan if vr_scan > vr_edge
 		# Finalization.
-		return max_edge
+		return (vl_edge, vr_edge)
 
 	[Extension] static def pixel_arr(img as Bitmap):
 		# Service objects preparation.
