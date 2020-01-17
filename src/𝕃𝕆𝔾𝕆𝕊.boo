@@ -48,7 +48,7 @@ class ASCII_logo():
 		# Reference image to ASCII conversion.
 		for y in range(ref_img.Height):
 			for x in range(ref_img.Width):
-				pixel_found = pixels[y * row_len + x] != 0 # Opaque -> found.
+				pixel_found = pixels[y * row_len + x] != 0 # Non-null -> found.
 				ascii.Append((ascii_gen.next() if		pixel_found else " "))
 				noise.Append((noise_gen.next() if not	pixel_found else " ")) unless noise_gen is null
 			noise.AppendLine() unless noise_gen is null
