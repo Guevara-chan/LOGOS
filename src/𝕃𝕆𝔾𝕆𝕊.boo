@@ -76,22 +76,28 @@ class ASCII_logo():
 	[Extension] static def find_edges(img as Bitmap, bg_color as Color):
 		# Service objects preparation.
 		img_width	= img.Width
-		vl_edge		= img_width-1
+		img_height	= img.Height
+		vl_edge		= img_width
 		vr_edge		= 0
+		hu_edge		= img_height
+		hb_edge		= 0
 		mark        = bg_color.ToArgb()
 		pixels as (Int32), row_len as int = img.pixel_arr()
 		# Edge detection.
-		for y in range(0, img.Height):
+		for y in range(0, img_height):
 			vl_scan = img_width
 			vr_scan = 0
 			for x in range(0, img_width):
 				if pixels[y * row_len + x] != mark:
 					vr_scan = x
 					vl_scan = x unless vl_scan < img_width
+			if vr_scan:
+				hu_edge = y unless hu_edge < img_height
 			vl_edge = vl_scan if vl_scan < vl_edge
 			vr_edge = vr_scan if vr_scan > vr_edge
 		# Finalization.
-		return (vl_edge, vr_edge)
+		print vl_edge
+		return (vl_edge, vr_edge, hu_edge, hb_edge)
 
 	[Extension] static def pixel_arr(img as Bitmap):
 		# Service objects preparation.
