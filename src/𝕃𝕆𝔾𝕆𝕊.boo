@@ -1,5 +1,5 @@
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.02 #
+# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.03 #
 # Developed in 2020 by Victoria Guevara #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
@@ -36,7 +36,8 @@ class ASCII_logo():
 		render	= Graphics.FromImage(img)
 		render.DrawString(text, font, SolidBrush(Color.Black), PointF(sizing.Width / 2, sizing.Height / 2), sf)
 		# Finalization.
-		return img
+		edges = img.find_edges(Color.FromArgb(0), 5, 3)
+		return img.Clone(Rectangle(edges[0], edges[1], edges[2], edges[3]), img.PixelFormat)
 
 	[Extension] static def scan_ascii(ref_img as Bitmap, char_pools as Tuple[of string, string]):
 		# Service objects preparation.		
@@ -59,7 +60,6 @@ class ASCII_logo():
 	static def render_ascii(ascii as Tuple[of string,string], palette as Tuple[of Color,Color,Color], font as Font):
 		# Service objects preparation.
 		sf			= StringFormat(StringFormatFlags.MeasureTrailingSpaces, Alignment: StringAlignment.Center)
-		edge_factor	= 2
 		# Image and render setup.
 		sizing	= Graphics.FromImage(Bitmap(1, 1)).MeasureString(ascii.Item1, font, PointF(), sf)
 		img		= Bitmap(sizing.Width, sizing.Height)
@@ -71,9 +71,9 @@ class ASCII_logo():
 		# Additional bg noise render.
 		if ascii.Item2:	render.DrawString(ascii.Item2, font, SolidBrush(palette.Item3), loc, sf)
 		# Finalization.
-		return img.Clone(Rectangle(0, 0, img.find_edges(palette.Item2)[1]+edge_factor, img.Height), img.PixelFormat)
+		return img.Clone(Rectangle(0, 0, img.find_edges(palette.Item2,1,0)[2], img.Height), img.PixelFormat)
 
-	[Extension] static def find_edges(img as Bitmap, bg_color as Color):
+	[Extension] static def find_edges(img as Bitmap, bg_color as Color, v_fields as int, h_fields as int):
 		# Service objects preparation.
 		img_width	= img.Width
 		img_height	= img.Height
@@ -93,8 +93,8 @@ class ASCII_logo():
 				hu_edge = y unless hu_edge < img_height
 			vl_edge = vl_scan if vl_scan < vl_edge
 			vr_edge = vr_scan if vr_scan > vr_edge
-		# Finalization.
-		return (vl_edge, vr_edge, hu_edge, hb_edge)
+		# Finalization
+		return (vl_edge-v_fields, hu_edge-h_fields, vr_edge-vl_edge+1+v_fields*2, hb_edge-hu_edge+1+h_fields*2)
 
 	[Extension] static def pixel_arr(img as Bitmap):
 		# Service objects preparation.
@@ -179,7 +179,7 @@ class UI():
 			<Window 
 				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.02]=" Height="150" Width="400" WindowStartupLocation="CenterScreen"
+				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.03]=" Height="150" Width="400" WindowStartupLocation="CenterScreen"
 				Background="#1E1E1E">
 				<Window.Resources>
 					<Style TargetType="Button">
