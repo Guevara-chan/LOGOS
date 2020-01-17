@@ -171,7 +171,7 @@ class UI():
 			<Window 
 				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.01]=" Height="150" Width="400" WindowStartupLocation="CenterScreen"
+				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.02]=" Height="150" Width="400" WindowStartupLocation="CenterScreen"
 				Background="#1E1E1E">
 				<Window.Resources>
 					<Style TargetType="Button">
