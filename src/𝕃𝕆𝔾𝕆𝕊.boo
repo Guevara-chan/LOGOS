@@ -21,6 +21,7 @@ class ASCII_logo():
 	public text_pool							= "01"
 	public noise_pool							= "0"
 	public slogan								= "I am error"
+	private static final edge_factor			= 2
 
 	# --Methods goes here.
 	def done():
@@ -69,7 +70,17 @@ class ASCII_logo():
 		# Additional bg noise render.
 		if ascii.Item2:	render.DrawString(ascii.Item2, font, SolidBrush(palette.Item3), loc, sf)
 		# Finalization.
-		return img
+		return img.Clone(Rectangle(0, 0, img.vert_edge(palette.Item2)+edge_factor, img.Height), img.PixelFormat)
+
+	[Extension] static def vert_edge(img as Bitmap, bg_color as Color):
+		max_edge = 0
+		img_width = img.Width
+		for y in range(0, img.Height):
+			edge = 0
+			for x in range(0, img_width):
+				edge = x if img.GetPixel(x, y) != bg_color
+			max_edge = edge if edge > max_edge
+		return max_edge
 
 	# --Auxilary service subclass.
 	class EndlessString():
@@ -153,8 +164,8 @@ class UI():
 							<Setter.Value>
 								<ControlTemplate TargetType="Button">
 									<Border Name="border" Background="{TemplateBinding Background}"
-                                		BorderThickness="{TemplateBinding BorderThickness}"
-                                			BorderBrush="{TemplateBinding BorderBrush}">
+										BorderThickness="{TemplateBinding BorderThickness}"
+											BorderBrush="{TemplateBinding BorderBrush}">
 										<ContentPresenter Content="{TemplateBinding Content}"
 											HorizontalAlignment="Center" VerticalAlignment="Center"/>
 									</Border>
@@ -187,9 +198,27 @@ class UI():
 						</Style.Triggers>
 					</Style>
 					<Style TargetType="TextBox">
-						<Setter Property="Foreground"			Value="Gold" />
+						<Setter Property="Foreground" Value="Gold" />
 						<Setter Property="Background" Value="Black" />
 					</Style>
+					<ControlTemplate TargetType="{x:Type TextBoxBase}" x:Key="TextBoxBaseControlTemplate">
+						<Border Background="{TemplateBinding Background}" x:Name="Bd" BorderBrush="Gray"
+							BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0,5,5,0"> 
+							<ScrollViewer x:Name="PART_ContentHost"/>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsEnabled" Value="False">
+								<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TargetName="Bd"/>
+								<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+							</Trigger>
+							<Trigger Property="Width" Value="Auto">
+								<Setter Property="MinWidth" Value="100"/>
+							</Trigger>
+							<Trigger Property="Height" Value="Auto">
+								<Setter Property="MinHeight" Value="20"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
 				</Window.Resources>
 				<Grid>
 					<Grid.RowDefinitions>
@@ -210,7 +239,7 @@ class UI():
 							Margin="0,3,5,3" Height="21" Content="Sylfaen: 20" />
 					<Label HorizontalAlignment="Right" Content="ASCII:" Grid.Row="1" Foreground="Coral"/>
 						<TextBox	Grid.Row="1" Grid.Column="1" Name="iASCII"		Margin="0,3,5,3" 
-							Text="▓▒░▒" />
+							Text="▓▒░▒" Template="{StaticResource TextBoxBaseControlTemplate}" />
 						<Button		Grid.Row="1" Grid.Column="2" Name="btnFillFnt"	Margin="0,3,5,3" Height="21"
 							Content="Consolas: 7" />
 					<Label HorizontalAlignment="Right" Content="Noise:" Grid.Row="2" Foreground="Coral"/>
@@ -225,15 +254,15 @@ class UI():
 										<Setter.Value>
 											<ControlTemplate TargetType="Button">
 												<Border Name="border" Background="{TemplateBinding Background}"
-			                                		BorderThickness="{TemplateBinding BorderThickness}"
-			                                			BorderBrush="{TemplateBinding BorderBrush}">
+													BorderThickness="{TemplateBinding BorderThickness}"
+														BorderBrush="{TemplateBinding BorderBrush}">
 													<ContentPresenter Content="{TemplateBinding Content}"
 														HorizontalAlignment="Center" VerticalAlignment="Center"/>
 												</Border>
 											</ControlTemplate>
 										</Setter.Value>
 									</Setter>
-                    				<Style.Triggers>
+									<Style.Triggers>
 										<Trigger Property="IsMouseOver"	Value="True">
 											<Trigger.EnterActions>
 												<BeginStoryboard>
