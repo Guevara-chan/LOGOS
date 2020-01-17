@@ -72,25 +72,30 @@ class ASCII_logo():
 		# Finalization.
 		return img.Clone(Rectangle(0, 0, img.vert_edge(palette.Item2)+edge_factor, img.Height), img.PixelFormat)
 
+	[Extension] static def pixel_arr(img as Bitmap):
+		# Service objects preparation.
+		img_data	= img.LockBits(Rectangle(0,0,img.Width,img.Height),1,img.PixelFormat)
+		row_len		= img_data.Stride >> 2
+		pixels		= array(Int32, data_len = img_data.Height * row_len)
+		# Pixel data marshaling.
+		Runtime.InteropServices.Marshal.Copy(img_data.Scan0, pixels, 0, data_len)
+		# Finalization.
+		img.UnlockBits(img_data)
+		return (pixels, row_len, data_len)
+
 	[Extension] static def vert_edge(img as Bitmap, bg_color as Color):
 		# Service objects preparation.
 		max_edge	= 0
 		img_width	= img.Width
-		img_data	= img.LockBits(Rectangle(0,0,img.Width,img.Height),1,img.PixelFormat)
-		row_len		= img_data.Stride >> 2
-		pixels		= array(Int32, data_len = img_data.Height * row_len)
 		mark        = bg_color.ToArgb()
-		# Pixel data marshaling.
-		Runtime.InteropServices.Marshal.Copy(img_data.Scan0, pixels, 0, data_len)
-		# Actial edge detection.
+		pixels as (Int32), row_len as int, data_len as int = img.pixel_arr()
+		# Edge detection.
 		for y in range(0, img.Height):
 			edge = 0
 			for x in range(0, img_width):
 				edge = x if pixels[y * row_len + x] != mark
 			max_edge = edge if edge > max_edge
-		img.UnlockBits(img_data)
 		# Finalization.
-		print max_edge
 		return max_edge
 
 	# --Auxilary service subclass.
