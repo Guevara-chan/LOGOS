@@ -73,13 +73,24 @@ class ASCII_logo():
 		return img.Clone(Rectangle(0, 0, img.vert_edge(palette.Item2)+edge_factor, img.Height), img.PixelFormat)
 
 	[Extension] static def vert_edge(img as Bitmap, bg_color as Color):
-		max_edge = 0
-		img_width = img.Width
+		# Service objects preparation.
+		max_edge	= 0
+		img_width	= img.Width
+		img_data	= img.LockBits(Rectangle(0,0,img.Width,img.Height),1,img.PixelFormat)
+		row_len		= img_data.Stride >> 2
+		pixels		= array(Int32, data_len = img_data.Height * row_len)
+		mark        = bg_color.ToArgb()
+		# Pixel data marshaling.
+		Runtime.InteropServices.Marshal.Copy(img_data.Scan0, pixels, 0, data_len)
+		# Actial edge detection.
 		for y in range(0, img.Height):
 			edge = 0
 			for x in range(0, img_width):
-				edge = x if img.GetPixel(x, y) != bg_color
+				edge = x if pixels[y * row_len + x] != mark
 			max_edge = edge if edge > max_edge
+		img.UnlockBits(img_data)
+		# Finalization.
+		print max_edge
 		return max_edge
 
 	# --Auxilary service subclass.
@@ -201,24 +212,6 @@ class UI():
 						<Setter Property="Foreground" Value="Gold" />
 						<Setter Property="Background" Value="Black" />
 					</Style>
-					<ControlTemplate TargetType="{x:Type TextBoxBase}" x:Key="TextBoxBaseControlTemplate">
-						<Border Background="{TemplateBinding Background}" x:Name="Bd" BorderBrush="Gray"
-							BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0,5,5,0"> 
-							<ScrollViewer x:Name="PART_ContentHost"/>
-						</Border>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsEnabled" Value="False">
-								<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TargetName="Bd"/>
-								<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-							</Trigger>
-							<Trigger Property="Width" Value="Auto">
-								<Setter Property="MinWidth" Value="100"/>
-							</Trigger>
-							<Trigger Property="Height" Value="Auto">
-								<Setter Property="MinHeight" Value="20"/>
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
 				</Window.Resources>
 				<Grid>
 					<Grid.RowDefinitions>
@@ -239,7 +232,7 @@ class UI():
 							Margin="0,3,5,3" Height="21" Content="Sylfaen: 20" />
 					<Label HorizontalAlignment="Right" Content="ASCII:" Grid.Row="1" Foreground="Coral"/>
 						<TextBox	Grid.Row="1" Grid.Column="1" Name="iASCII"		Margin="0,3,5,3" 
-							Text="▓▒░▒" Template="{StaticResource TextBoxBaseControlTemplate}" />
+							Text="▓▒░▒" />
 						<Button		Grid.Row="1" Grid.Column="2" Name="btnFillFnt"	Margin="0,3,5,3" Height="21"
 							Content="Consolas: 7" />
 					<Label HorizontalAlignment="Right" Content="Noise:" Grid.Row="2" Foreground="Coral"/>
