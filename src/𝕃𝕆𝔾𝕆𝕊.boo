@@ -111,8 +111,8 @@ class ASCII_logo():
 		img.UnlockBits(img_data)
 		return (pixels, row_len)
 
-	[Extension] static def widen(area as Rectangle, spacer as Size):
-		return Rectangle(area.X-spacer.Width,area.Y-spacer.Height,area.Width+spacer.Width*2,area.Height+spacer.Height*2)
+	[Extension] static def widen(area as Rectangle, margin as Size):
+		return Rectangle(area.X-margin.Width,area.Y-margin.Height,area.Width+margin.Width*2,area.Height+margin.Height*2)
 
 	# --Auxilary service subclass.
 	class EndlessString():
