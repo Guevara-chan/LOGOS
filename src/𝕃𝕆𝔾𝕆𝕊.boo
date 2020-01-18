@@ -62,12 +62,16 @@ class ASCII_logo():
 	[Extension]
 	static def render_ascii(ascii as Tuple[of string,string], palette as Tuple[of Color,Color,Color], font as Font):
 		# Service objects preparation.
-		sf			= StringFormat(StringFormatFlags.MeasureTrailingSpaces, Alignment: StringAlignment.Center)
-		margin		= Size(1, 2)
+		sf			= StringFormat(StringFormatFlags.MeasureTrailingSpaces, Alignment: StringAlignment.Center,
+			LineAlignment: StringAlignment.Center)
+		margin		= Size(1, 3)
+		# Init text measurement.
+		sizing	= Graphics.FromImage(Bitmap(1, 1)).MeasureString(ascii.Item1, font, PointF(), sf)		
+		sizing.Width	+= margin.Width * 2
+		sizing.Height	+= margin.Height * 2
 		# Image and render setup.
-		sizing	= Graphics.FromImage(Bitmap(1, 1)).MeasureString(ascii.Item1, font, PointF(), sf)
-		img		= Bitmap(sizing.Width + margin.Width * 2, sizing.Height + margin.Height * 2)
-		loc		= PointF(sizing.Width / 2, 0)
+		img		= Bitmap(sizing.Width, sizing.Height)
+		loc		= PointF(sizing.Width / 2, sizing.Height / 2)
 		render	= Graphics.FromImage(img)
 		# Primary render.
 		render.Clear(palette.Item2)
