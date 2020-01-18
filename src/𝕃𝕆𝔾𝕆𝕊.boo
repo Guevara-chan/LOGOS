@@ -31,8 +31,11 @@ class ASCII_logo():
 	[Extension] static def render_text(text as string, font as Font, fields as Size):
 		# Service objects preparation.
 		sf		= StringFormat(Alignment: StringAlignment.Center, LineAlignment: StringAlignment.Center)
-		# Text rendering.
+		# Init text measurement.
 		sizing	= Graphics.FromImage(Bitmap(1, 1)).MeasureString(text, font, Point(), sf)
+		sizing.Width += fields.Width * 2
+		sizing.Height += fields.Height * 2
+		# Text rendering.
 		img		= Bitmap(sizing.Width, sizing.Height)
 		render	= Graphics.FromImage(img)
 		render.DrawString(text, font, SolidBrush(Color.Black), PointF(sizing.Width / 2, sizing.Height / 2), sf)
@@ -95,8 +98,8 @@ class ASCII_logo():
 			vr_edge = vr_scan if vr_scan > vr_edge
 		# Finalization
 		return Rectangle(Math.Max(0, vl_edge -v_fields), Math.Max(0, hu_edge -h_fields),
-			Math.Min(vr_edge-vl_edge+1+v_fields*2, img_width-vl_edge),
-			Math.Min(hb_edge-hu_edge+1+h_fields*2, img_height-hu_edge))
+			Math.Min(vr_edge-vl_edge+1+v_fields*2, img_width-vl_edge+1),
+			Math.Min(hb_edge-hu_edge+1+h_fields*2, img_height-hu_edge+1))
 
 	[Extension] static def pixel_arr(img as Bitmap):
 		# Service objects preparation.
