@@ -13,6 +13,7 @@ import System.Windows.Media from 'PresentationCore.dll' as SWM
 
 #.{ [Classes]
 class ASCII_logo():
+	public fields								= Size(5, 3)
 	public shape_font							= Font("Sylfaen", 20)
 	public fill_font							= Font("Consolas", 7, FontStyle.Bold)
 	public text_color							= Color.Pink
@@ -24,10 +25,10 @@ class ASCII_logo():
 
 	# --Methods goes here.
 	def done():
-		return slogan.render_text(shape_font).scan_ascii(Tuple.Create(text_pool, noise_pool))\
+		return slogan.render_text(shape_font, fields).scan_ascii(Tuple.Create(text_pool, noise_pool))\
 			.render_ascii(Tuple.Create(text_color, bg_color, noise_color), fill_font)
 
-	[Extension] static def render_text(text as string, font as Font):
+	[Extension] static def render_text(text as string, font as Font, fields as Size):
 		# Service objects preparation.
 		sf		= StringFormat(Alignment: StringAlignment.Center, LineAlignment: StringAlignment.Center)
 		# Text rendering.
@@ -36,7 +37,7 @@ class ASCII_logo():
 		render	= Graphics.FromImage(img)
 		render.DrawString(text, font, SolidBrush(Color.Black), PointF(sizing.Width / 2, sizing.Height / 2), sf)
 		# Finalization.
-		return img.Clone(img.find_edges(Color.FromArgb(0), 5, 3), img.PixelFormat)
+		return img.Clone(img.find_edges(Color.FromArgb(0), fields.Width, fields.Height), img.PixelFormat)
 
 	[Extension] static def scan_ascii(ref_img as Bitmap, char_pools as Tuple[of string, string]):
 		# Service objects preparation.		
@@ -94,7 +95,8 @@ class ASCII_logo():
 			vr_edge = vr_scan if vr_scan > vr_edge
 		# Finalization
 		return Rectangle(Math.Max(0, vl_edge -v_fields), Math.Max(0, hu_edge -h_fields),
-			Math.Min(vr_edge-vl_edge+1+v_fields*2, img_width), Math.Min(hb_edge-hu_edge+1+h_fields*2, img_height))
+			Math.Min(vr_edge-vl_edge+1+v_fields*2, img_width-vl_edge),
+			Math.Min(hb_edge-hu_edge+1+h_fields*2, img_height-hu_edge))
 
 	[Extension] static def pixel_arr(img as Bitmap):
 		# Service objects preparation.
@@ -128,6 +130,7 @@ class UI():
 		fxcontrol = find_child('btnNoiseClr')
 		find_button("btnRender").Click += {e|
 			ASCII_logo(
+				fields:		Size(5, 3),
 				slogan:		find_child('iSlogan').Text,
 				text_pool:	find_child('iASCII').Text,
 				noise_pool:	find_child('iNoise').Text,
