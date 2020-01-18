@@ -97,9 +97,7 @@ class ASCII_logo():
 			vl_edge = vl_scan if vl_scan < vl_edge
 			vr_edge = vr_scan if vr_scan > vr_edge
 		# Finalization
-		return Rectangle(Math.Max(0, vl_edge -v_fields), Math.Max(0, hu_edge -h_fields),
-			Math.Min(vr_edge-vl_edge+1+v_fields*2, img_width-vl_edge+1),
-			Math.Min(hb_edge-hu_edge+1+h_fields*2, img_height-hu_edge+1))
+		return Rectangle(vl_edge-v_fields, hu_edge-h_fields,vr_edge-vl_edge+1+v_fields*2, hb_edge-hu_edge+1+h_fields*2)
 
 	[Extension] static def pixel_arr(img as Bitmap):
 		# Service objects preparation.
