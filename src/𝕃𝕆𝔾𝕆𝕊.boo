@@ -33,14 +33,14 @@ class ASCII_logo():
 		sf		= StringFormat(Alignment: StringAlignment.Center, LineAlignment: StringAlignment.Center)
 		# Init text measurement.
 		sizing	= Graphics.FromImage(Bitmap(1, 1)).MeasureString(text, font, Point(), sf)
-		sizing.Width += fields.Width * 2
-		sizing.Height += fields.Height * 2
+		sizing.Width	+= fields.Width * 2
+		sizing.Height	+= fields.Height * 2
 		# Text rendering.
 		img		= Bitmap(sizing.Width, sizing.Height)
 		render	= Graphics.FromImage(img)
 		render.DrawString(text, font, SolidBrush(Color.Black), PointF(sizing.Width / 2, sizing.Height / 2), sf)
 		# Finalization.
-		return img.Clone(img.find_edges(Color.FromArgb(0), fields.Width, fields.Height), img.PixelFormat)
+		return img.Clone(img.find_edges(Color.FromArgb(0)).widen(fields), img.PixelFormat)
 
 	[Extension] static def scan_ascii(ref_img as Bitmap, char_pools as Tuple[of string, string]):
 		# Service objects preparation.		
@@ -63,9 +63,10 @@ class ASCII_logo():
 	static def render_ascii(ascii as Tuple[of string,string], palette as Tuple[of Color,Color,Color], font as Font):
 		# Service objects preparation.
 		sf			= StringFormat(StringFormatFlags.MeasureTrailingSpaces, Alignment: StringAlignment.Center)
+		margin		= Size(1, 2)
 		# Image and render setup.
 		sizing	= Graphics.FromImage(Bitmap(1, 1)).MeasureString(ascii.Item1, font, PointF(), sf)
-		img		= Bitmap(sizing.Width, sizing.Height)
+		img		= Bitmap(sizing.Width + margin.Width * 2, sizing.Height + margin.Height * 2)
 		loc		= PointF(sizing.Width / 2, 0)
 		render	= Graphics.FromImage(img)
 		# Primary render.
@@ -74,9 +75,9 @@ class ASCII_logo():
 		# Additional bg noise render.
 		if ascii.Item2:	render.DrawString(ascii.Item2, font, SolidBrush(palette.Item3), loc, sf)
 		# Finalization.
-		return img.Clone(Rectangle(0, 0, img.find_edges(palette.Item2,1,0).Width, img.Height), img.PixelFormat)
+		return img.Clone(img.find_edges(palette.Item2).widen(margin), img.PixelFormat)
 
-	[Extension] static def find_edges(img as Bitmap, bg_color as Color, v_fields as int, h_fields as int):
+	[Extension] static def find_edges(img as Bitmap, bg_color as Color):
 		# Service objects preparation.
 		img_width	= img.Width
 		img_height	= img.Height
@@ -97,7 +98,7 @@ class ASCII_logo():
 			vl_edge = vl_scan if vl_scan < vl_edge
 			vr_edge = vr_scan if vr_scan > vr_edge
 		# Finalization
-		return Rectangle(vl_edge-v_fields, hu_edge-h_fields,vr_edge-vl_edge+1+v_fields*2, hb_edge-hu_edge+1+h_fields*2)
+		return Rectangle(vl_edge, hu_edge, vr_edge-vl_edge+1, hb_edge-hu_edge+1)
 
 	[Extension] static def pixel_arr(img as Bitmap):
 		# Service objects preparation.
@@ -109,6 +110,9 @@ class ASCII_logo():
 		# Finalization.
 		img.UnlockBits(img_data)
 		return (pixels, row_len)
+
+	[Extension] static def widen(area as Rectangle, spacer as Size):
+		return Rectangle(area.X-spacer.Width,area.Y-spacer.Height,area.Width+spacer.Width*2,area.Height+spacer.Height*2)
 
 	# --Auxilary service subclass.
 	class EndlessString():
