@@ -1,5 +1,5 @@
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.03 #
+# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.04f #
 # Developed in 2020 by Victoria Guevara #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
@@ -137,9 +137,10 @@ class UI():
 			return Color.FromArgb((src = brush.Color).A, src.R, src.G, src.B)
 		# Main code.
 		fxcontrol = find_child('btnNoiseClr')
+		for id in ("iHMargin", "iVMargin"):	(find_child(id) as SW.Controls.TextBox).PreviewTextInput += num_filter
 		find_button("btnRender").Click += {e|
 			ASCII_logo(
-				fields:		Size(5, 3),
+				fields:		Size(Int32.Parse(find_child('iHMargin').Text), Int32.Parse(find_child("iVMargin").Text)),
 				slogan:		find_child('iSlogan').Text,
 				text_pool:	find_child('iASCII').Text,
 				noise_pool:	find_child('iNoise').Text,
@@ -171,6 +172,9 @@ class UI():
 			btn.Content = hex = ColorTranslator.ToHtml(dlg.Color)
 			btn.Foreground = SWM.SolidColorBrush(SWM.ColorConverter.ConvertFromString(hex))
 
+	def num_filter(sender, e as Windows.Input.TextCompositionEventArgs):
+		e.Handled = Text.RegularExpressions.Regex("[^0-9]").IsMatch(e.Text)		
+
 	[Extension] static def font2str(fnt as Font):
 		idx = 1
 		return "$(fnt.FontFamily.Name): $(Math.Truncate(fnt.Size))" + join(
@@ -191,7 +195,7 @@ class UI():
 			<Window 
 				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.03]=" Height="150" Width="400" WindowStartupLocation="CenterScreen"
+				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.04]=" Height="180" Width="400" WindowStartupLocation="CenterScreen"
 				Background="#1E1E1E">
 				<Window.Resources>
 					<Style TargetType="Button">
@@ -200,7 +204,7 @@ class UI():
 						<Setter Property="Template">
 							<Setter.Value>
 								<ControlTemplate TargetType="Button">
-									<Border Name="border" Background="{TemplateBinding Background}"
+									<Border x:Name="border" Background="{TemplateBinding Background}"
 										BorderThickness="{TemplateBinding BorderThickness}"
 											BorderBrush="{TemplateBinding BorderBrush}">
 										<ContentPresenter Content="{TemplateBinding Content}"
@@ -245,6 +249,7 @@ class UI():
 						<RowDefinition Height="27"/>
 						<RowDefinition Height="27"/>
 						<RowDefinition Height="27"/>
+						<RowDefinition Height="27"/>
 					</Grid.RowDefinitions>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="48"/>
@@ -252,19 +257,19 @@ class UI():
 						<ColumnDefinition Width="170"/>
 					</Grid.ColumnDefinitions>	
 					<Label HorizontalAlignment="Right" VerticalAlignment="Top" Content="Slogan:" Foreground="Coral"/>
-						<TextBox	VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Name="iSlogan"
+						<TextBox	VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="1" x:Name="iSlogan"
 							Margin="0,3,5,6" Text="I am error" AcceptsReturn="True" TextWrapping="Wrap" />
-						<Button		VerticalAlignment="Top" Grid.Row="0" Grid.Column="2" Name="btnShapeFnt" 
+						<Button		VerticalAlignment="Top" Grid.Row="0" Grid.Column="2" x:Name="btnShapeFnt" 
 							Margin="0,3,5,3" Height="21" Content="Sylfaen: 20" />
 					<Label HorizontalAlignment="Right" Content="ASCII:" Grid.Row="1" Foreground="Coral"/>
-						<TextBox	Grid.Row="1" Grid.Column="1" Name="iASCII"		Margin="0,3,5,3" 
+						<TextBox	Grid.Row="1" Grid.Column="1" x:Name="iASCII"		Margin="0,3,5,3" 
 							Text="▓▒░▒" />
-						<Button		Grid.Row="1" Grid.Column="2" Name="btnFillFnt"	Margin="0,3,5,3" Height="21"
+						<Button		Grid.Row="1" Grid.Column="2" x:Name="btnFillFnt"	Margin="0,3,5,3" Height="21"
 							Content="Consolas: 7" />
 					<Label HorizontalAlignment="Right" Content="Noise:" Grid.Row="2" Foreground="Coral"/>
-						<TextBox	Grid.Row="2" Grid.Column="1" Name="iNoise"		Margin="0,3,5,3" 
+						<TextBox	Grid.Row="2" Grid.Column="1" x:Name="iNoise"		Margin="0,3,5,3" 
 							Text="1101000101001100100100" />
-						<Button		Grid.Row="2" Grid.Column="2" Name="btnNoiseClr"	Margin="0,3,5,3" Height="21" 
+						<Button		Grid.Row="2" Grid.Column="2" x:Name="btnNoiseClr"	Margin="0,3,5,3" Height="21" 
 							Content="#191919" FontFamily="Sylfaen Bold" FontSize="14" Background="Black"
 							BorderBrush="Cyan" Foreground="#191919" BorderThickness="2">
 							<Button.Style>
@@ -272,7 +277,7 @@ class UI():
 									<Setter Property="Template">
 										<Setter.Value>
 											<ControlTemplate TargetType="Button">
-												<Border Name="border" Background="{TemplateBinding Background}"
+												<Border x:Name="border" Background="{TemplateBinding Background}"
 													BorderThickness="{TemplateBinding BorderThickness}"
 														BorderBrush="{TemplateBinding BorderBrush}">
 													<ContentPresenter Content="{TemplateBinding Content}"
@@ -316,10 +321,22 @@ class UI():
 							 	</Style>
 							</Button.Style>
 						</Button>
-					<Label HorizontalAlignment="Right" Content="Out:" Grid.Row="3" Foreground="Coral"/>
-						<TextBox	Grid.Row="3" Grid.Column="1" Name="iPath" Margin="0,3,5,3" Text="Output.png" />
-						<Button		 VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="2" Name="btnRender"
+					<Label HorizontalAlignment="Right" Content="Out:" Grid.Row="4" Foreground="Coral"/>
+						<TextBox	Grid.Row="4" Grid.Column="1" x:Name="iPath" Margin="0,3,5,3" Text="Output.png" />
+						<Button		 VerticalAlignment="Bottom" Grid.Row="4" Grid.Column="2" x:Name="btnRender"
 						  	Margin="0,0,5,3" Content="Render !" Height = "21" />
+					<Grid Grid.Row="3" Grid.ColumnSpan="3">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="81"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="81"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<Label Content="Horiz margin:" Foreground="Coral" Grid.Column="0"/>
+						<TextBox x:Name = "iHMargin" Text="5" Grid.Column="1" Margin="0,3,5,3"/>
+						<Label Content="Vert margin:" Foreground="Coral" Grid.Column="2"/>
+						<TextBox x:Name = "iVMargin" Text="3" Grid.Column="3" Margin="0,3,5,3"/>
+					</Grid>
 				</Grid>
 			</Window>
 		""")
