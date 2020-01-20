@@ -332,10 +332,10 @@ class UI():
 							<ColumnDefinition Width="81"/>
 							<ColumnDefinition Width="*"/>
 						</Grid.ColumnDefinitions>
-						<Label Content="Horiz margin:" Foreground="Coral" Grid.Column="0"/>
-						<TextBox x:Name = "iHMargin" Text="5" Grid.Column="1" Margin="0,3,5,3"/>
-						<Label Content="Vert margin:" Foreground="Coral" Grid.Column="2"/>
-						<TextBox x:Name = "iVMargin" Text="3" Grid.Column="3" Margin="0,3,5,3"/>
+						<Label Content="Horiz margin:" Foreground="LightCoral" Grid.Column="0"/>
+						<TextBox x:Name="iHMargin" Text="5" Grid.Column="1" Margin="0,3,5,3" Foreground="DarkOrange"/>
+						<Label Content="Vert margin:" Foreground="LightCoral" Grid.Column="2"/>
+						<TextBox x:Name="iVMargin" Text="3" Grid.Column="3" Margin="0,3,5,3" Foreground="DarkOrange"/>
 					</Grid>
 				</Grid>
 			</Window>
