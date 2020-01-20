@@ -15,3 +15,4 @@ It requires .NET 4.0 framework to run, though confirmed as being mostly compatib
 # 「Brief samples of ASCII calligraphy」
 ![<3](https://user-images.githubusercontent.com/8768470/72172888-66993500-33e7-11ea-9450-1c80c917569f.png)
 ![Base](https://user-images.githubusercontent.com/8768470/72662149-b46bf980-39f4-11ea-9e1a-6605a2c01a09.png)
+![UI](https://user-images.githubusercontent.com/8768470/72743525-e3cd6280-3bbc-11ea-9ce0-9fe96af0320f.png)
