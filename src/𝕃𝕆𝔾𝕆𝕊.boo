@@ -48,7 +48,7 @@ class ASCII_logo():
 		ascii		= Text.StringBuilder(); noise = Text.StringBuilder()
 		ascii_gen	= EndlessString(char_pools.Item1)
 		noise_gen	= EndlessString(char_pools.Item2) if char_pools.Item2
-		scanlines	= Collections.Generic.List[of Task[(String)]]()
+		scanlines	= Collections.Generic.List[of Task[Tuple[string, string]]]()
 		img_width	= ref_img.Width
 		pixels as (Int32), row_len as int = ref_img.pixel_arr()
 		# Reference image to ASCII conversion.
@@ -59,12 +59,12 @@ class ASCII_logo():
 					pixel_found = pixels[y * row_len + x] != 0 # Non-null -> found.
 					ascii_ln[x] = (ascii_gen.next() if pixel_found else char(' '))
 					noise_ln[x] = (noise_gen.next() if not	pixel_found else char(' ')) unless noise_gen is null
-				return (String(ascii_ln), String(noise_ln))
+				return Tuple.Create(String(ascii_ln), String(noise_ln))
 			scanlines.Add(Task.Run(scan_fn))
 		# Results concatenation.
 		for scanline in scanlines:
-			ascii.AppendLine(scanline.Result[0])			
-			noise.AppendLine(scanline.Result[1]) unless noise_gen is null
+			ascii.AppendLine(scanline.Result.Item1)			
+			noise.AppendLine(scanline.Result.Item2) unless noise_gen is null
 		# Finalization.
 		return Tuple.Create(ascii.ToString(), noise.ToString())
 
