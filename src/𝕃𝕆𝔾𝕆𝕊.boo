@@ -48,7 +48,7 @@ class ASCII_logo():
 		ascii		= Text.StringBuilder(); noise = Text.StringBuilder()
 		ascii_gen	= EndlessString(char_pools.Item1)
 		noise_gen	= EndlessString(char_pools.Item2) if char_pools.Item2
-		scans		= Collections.Generic.List[of Task[(String)]]()
+		scanlines	= Collections.Generic.List[of Task[(String)]]()
 		img_width	= ref_img.Width
 		pixels as (Int32), row_len as int = ref_img.pixel_arr()
 		# Reference image to ASCII conversion.
@@ -60,11 +60,11 @@ class ASCII_logo():
 					ascii_ln[x] = (ascii_gen.next() if pixel_found else char(' '))
 					noise_ln[x] = (noise_gen.next() if not	pixel_found else char(' ')) unless noise_gen is null
 				return (String(ascii_ln), String(noise_ln))
-			scans.Add(Task.Run(scan_fn))
+			scanlines.Add(Task.Run(scan_fn))
 		# Results concatenation.
-		for scan in scans:
-			ascii.AppendLine(scan.Result[0])			
-			noise.AppendLine(scan.Result[1]) unless noise_gen is null
+		for scanline in scanlines:
+			ascii.AppendLine(scanline.Result[0])			
+			noise.AppendLine(scanline.Result[1]) unless noise_gen is null
 		# Finalization.
 		return Tuple.Create(ascii.ToString(), noise.ToString())
 
@@ -95,22 +95,31 @@ class ASCII_logo():
 		img_width	= img.Width
 		img_height	= img.Height
 		mark        = bg_color.ToArgb()
+		scanlines	= Collections.Generic.List[of Task[(int)]]()
 		pixels as (Int32), row_len as int	= img.pixel_arr()
 		vl_edge, vr_edge, hu_edge, hb_edge	= (img_width, 0, img_height, 0)
 		# Edge detection.
 		for y in range(0, img_height):
-			vl_scan = img_width
-			vr_scan = 0
-			for x in range(0, img_width):
-				if pixels[y * row_len + x] != mark:
-					vr_scan = x
-					vl_scan = x unless vl_scan < img_width
+			scan_fn = def():
+				vl_scan = img_width
+				vr_scan = 0
+				for x in range(0, img_width):
+					if pixels[y * row_len + x] != mark:
+						vr_scan = x
+						vl_scan = x unless vl_scan < img_width
+				return (vl_scan, vr_scan)
+			scanlines.Add(Task.Run(scan_fn))
+		# Scan analyzis.
+		y = 0
+		for scanline in scanlines:
+			vl_scan, vr_scan = scanline.Result
 			if vr_scan:
 				hb_edge = y if y > hb_edge
 				hu_edge = y unless hu_edge < img_height
 			vl_edge = vl_scan if vl_scan < vl_edge
 			vr_edge = vr_scan if vr_scan > vr_edge
-		# Finalization
+			y++
+		# Finalization.
 		return Rectangle(vl_edge, hu_edge, vr_edge-vl_edge+1, hb_edge-hu_edge+1)
 
 	[Extension] static def pixel_arr(img as Bitmap):
@@ -161,7 +170,7 @@ class UI():
 					shape_font:	str2font(find_child('btnShapeFnt').Content),
 					fill_font:	str2font(find_child('btnFillFnt').Content)
 				).done().Save(find_child('iPath').Text as String)
-			#except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
+			except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
 			ensure: GC.Collect()
 		# Aux event handlers.
 		find_button('btnShapeFnt').Click	+= {e|
