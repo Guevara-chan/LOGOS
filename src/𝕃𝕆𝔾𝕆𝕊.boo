@@ -7,6 +7,7 @@ import System
 import System.Drawing
 import System.Windows as SW
 import System.Windows.Forms
+import System.Threading.Tasks
 import System.Runtime.CompilerServices
 import System.Windows.Markup from 'PresentationFramework.dll'
 import System.Windows.Media from 'PresentationCore.dll' as SWM
@@ -47,15 +48,23 @@ class ASCII_logo():
 		ascii		= Text.StringBuilder(); noise = Text.StringBuilder()
 		ascii_gen	= EndlessString(char_pools.Item1)
 		noise_gen	= EndlessString(char_pools.Item2) if char_pools.Item2
+		scans		= Collections.Generic.List[of Task[(String)]]()
+		img_width	= ref_img.Width
 		pixels as (Int32), row_len as int = ref_img.pixel_arr()
 		# Reference image to ASCII conversion.
 		for y in range(ref_img.Height):
-			for x in range(ref_img.Width):
-				pixel_found = pixels[y * row_len + x] != 0 # Non-null -> found.
-				ascii.Append((ascii_gen.next() if		pixel_found else " "))
-				noise.Append((noise_gen.next() if not	pixel_found else " ")) unless noise_gen is null
-			noise.AppendLine() unless noise_gen is null
-			ascii.AppendLine()
+			scan_fn = def():
+				ascii_ln = array(char, img_width); noise_ln = array(char, img_width)				
+				for x in range(img_width):
+					pixel_found = pixels[y * row_len + x] != 0 # Non-null -> found.
+					ascii_ln[x] = (ascii_gen.next() if pixel_found else char(' '))
+					noise_ln[x] = (noise_gen.next() if not	pixel_found else char(' ')) unless noise_gen is null
+				return (String(ascii_ln), String(noise_ln))
+			scans.Add(Task.Run(scan_fn))
+		# Results concatenation.
+		for scan in scans:
+			ascii.AppendLine(scan.Result[0])			
+			noise.AppendLine(scan.Result[1]) unless noise_gen is null
 		# Finalization.
 		return Tuple.Create(ascii.ToString(), noise.ToString())
 
@@ -152,7 +161,7 @@ class UI():
 					shape_font:	str2font(find_child('btnShapeFnt').Content),
 					fill_font:	str2font(find_child('btnFillFnt').Content)
 				).done().Save(find_child('iPath').Text as String)
-			except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
+			#except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
 			ensure: GC.Collect()
 		# Aux event handlers.
 		find_button('btnShapeFnt').Click	+= {e|
