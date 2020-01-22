@@ -1,5 +1,5 @@
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.04f #
+# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.04 #
 # Developed in 2020 by Victoria Guevara #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
@@ -135,26 +135,32 @@ class UI():
 			return SWM.SolidColorBrush(SWM.Color.FromArgb(src.A, src.R, src.G, src.B))
 		def brush2color(brush as SWM.SolidColorBrush):
 			return Color.FromArgb((src = brush.Color).A, src.R, src.G, src.B)
-		# Main code.
+		# Input event handlers.
 		fxcontrol = find_child('btnNoiseClr')
 		for id in ("iHMargin", "iVMargin"):	(find_child(id) as SW.Controls.TextBox).PreviewTextInput += num_filter
-		find_button("btnRender").Click += {e|
-			ASCII_logo(
-				fields:		Size(Int32.Parse(find_child('iHMargin').Text), Int32.Parse(find_child("iVMargin").Text)),
-				slogan:		find_child('iSlogan').Text,
-				text_pool:	find_child('iASCII').Text,
-				noise_pool:	find_child('iNoise').Text,
-				bg_color:	brush2color(fxcontrol.Background),
-				text_color:	brush2color(fxcontrol.BorderBrush),
-				noise_color:ColorTranslator.FromHtml(fxcontrol.Content),
-				shape_font:	str2font(find_child('btnShapeFnt').Content),
-				fill_font:	str2font(find_child('btnFillFnt').Content)
-			).done().Save(find_child('iPath').Text as String)}
+		# Main click event handler.
+		find_button("btnRender").Click += def(e):
+			try:
+				ASCII_logo(
+					fields:		Size(Int32.Parse(find_child('iHMargin').Text),Int32.Parse(find_child("iVMargin").Text)),
+					slogan:		find_child('iSlogan').Text,
+					text_pool:	find_child('iASCII').Text,
+					noise_pool:	find_child('iNoise').Text,
+					bg_color:	brush2color(fxcontrol.Background),
+					text_color:	brush2color(fxcontrol.BorderBrush),
+					noise_color:ColorTranslator.FromHtml(fxcontrol.Content),
+					shape_font:	str2font(find_child('btnShapeFnt').Content),
+					fill_font:	str2font(find_child('btnFillFnt').Content)
+				).done().Save(find_child('iPath').Text as String)
+			except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
+			ensure: GC.Collect()
+		# Aux event handlers.
 		find_button('btnShapeFnt').Click	+= {e|
 			fxcontrol.Background = color2brush(askfont('btnShapeFnt', brush2color(fxcontrol.Background), false))}
 		find_button('btnFillFnt').Click		+= {e|
 			fxcontrol.BorderBrush = color2brush(askfont('btnFillFnt', brush2color(fxcontrol.BorderBrush), true))}
 		find_button('btnNoiseClr').Click	+= {e|askcolor('btnNoiseClr')}
+		# Finalization.
 		form.ShowDialog()
 
 	def find_child(id as string) as duck:
