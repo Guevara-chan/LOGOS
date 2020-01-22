@@ -172,7 +172,7 @@ class UI():
 					fill_font:	str2font(find_child('btnFillFnt').Content)
 				).done().Save(find_child('iPath').Text as String)
 			except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
-			ensure: GC.Collect(); form.IsEnabled = false
+			ensure: GC.Collect(); form.IsEnabled = true
 		# Aux event handlers.
 		find_button('btnShapeFnt').Click	+= {e|
 			fxcontrol.Background = color2brush(askfont('btnShapeFnt', brush2color(fxcontrol.Background), false))}
