@@ -1,5 +1,5 @@
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.04 #
+# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.05 #
 # Developed in 2020 by Victoria Guevara #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
@@ -209,6 +209,7 @@ class UI():
 		while not task.IsCompleted:
 			counter.Content = (DateTime.Now - start).ToString("mm\\:ss\\.ff")
 			Application.DoEvents()
+			Threading.Thread.Sleep(50)
 		counter.Content = backup
 		return task.Result
 
@@ -232,7 +233,7 @@ class UI():
 			<Window 
 				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.04]=" Height="180" Width="400" WindowStartupLocation="CenterScreen"
+				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.05]=" Height="180" Width="400" WindowStartupLocation="CenterScreen"
 				Background="#1E1E1E">
 				<Window.Resources>
 					<Style TargetType="Button">
