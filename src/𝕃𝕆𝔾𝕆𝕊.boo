@@ -42,6 +42,7 @@ class ASCII_logo():
 		# Text rendering.
 		img		= Bitmap(sizing.Width, sizing.Height)
 		render	= Graphics.FromImage(img)
+		#render.TextRenderingHint = Text.TextRenderingHint.4
 		render.DrawString(text, font, SolidBrush(Color.Black), PointF(sizing.Width / 2, sizing.Height / 2), sf)
 		# Finalization.
 		return img.Clone(img.find_edges(Color.FromArgb(0)).widen(fields), img.PixelFormat)
@@ -64,6 +65,7 @@ class ASCII_logo():
 					noise_ln[x] = (noise_gen.next() if not	pixel_found else char(' ')) unless noise_gen is null
 				return Tuple.Create(String(ascii_ln), String(noise_ln))
 			scanlines.Add(Task.Run(scan_fn))
+			#Threading.Thread.Sleep(1)
 		# Results concatenation.
 		for scanline in scanlines:
 			ascii.AppendLine(scanline.Result.Item1)			
@@ -74,9 +76,9 @@ class ASCII_logo():
 	[Extension]
 	static def render_ascii(ascii as Tuple[of string,string], palette as Tuple[of Color,Color,Color], font as Font):
 		# Service objects preparation.
-		sf			= StringFormat(StringFormatFlags.MeasureTrailingSpaces, Alignment: StringAlignment.Center,
+		sf		= StringFormat(StringFormatFlags.MeasureTrailingSpaces, Alignment: StringAlignment.Center,
 			LineAlignment: StringAlignment.Center)
-		margin		= Size(1, 3)
+		margin	= Size(1, 3)
 		# Init text measurement.
 		sizing	= Graphics.FromImage(Bitmap(1, 1)).MeasureString(ascii.Item1, font, PointF(), sf)		
 		sizing.Width	+= margin.Width * 2
@@ -141,7 +143,7 @@ class ASCII_logo():
 
 	# --Auxilary service subclass.
 	class EndlessString():
-		val as string; idx = 0
+		val as string; idx = -1
 		def constructor(text as string):
 			val = text
 		def next():
