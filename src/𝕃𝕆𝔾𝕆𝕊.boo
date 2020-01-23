@@ -11,6 +11,7 @@ import System.Threading.Tasks
 import System.Runtime.CompilerServices
 import System.Windows.Markup from 'PresentationFramework.dll'
 import System.Windows.Media from 'PresentationCore.dll' as SWM
+import System.Drawing.Text.TextRenderingHint as TRH
 
 #.{ [Classes]
 class ASCII_logo():
@@ -23,16 +24,18 @@ class ASCII_logo():
 	public text_pool							= "01"
 	public noise_pool							= "0"
 	public slogan								= "I am error"
+	public shape_hint							= TRH.SystemDefault
+	public fill_hint							= TRH.SystemDefault
 
 	# --Methods goes here.
 	def done():
-		return slogan.render_text(shape_font, fields).scan_ascii(Tuple.Create(text_pool, noise_pool))\
-			.render_ascii(Tuple.Create(text_color, bg_color, noise_color), fill_font)
+		return slogan.render_text(shape_font, fields, shape_hint).scan_ascii(Tuple.Create(text_pool, noise_pool))\
+			.render_ascii(Tuple.Create(text_color, bg_color, noise_color), fill_font, fill_hint)
 
 	def begin():
 		return Task.Run(done)
 
-	[Extension] static def render_text(text as string, font as Font, fields as Size):
+	[Extension] static def render_text(text as string, font as Font, fields as Size, hint as TRH):
 		# Service objects preparation.
 		sf		= StringFormat(Alignment: StringAlignment.Center, LineAlignment: StringAlignment.Center)
 		# Init text measurement.
@@ -42,12 +45,12 @@ class ASCII_logo():
 		# Text rendering.
 		img		= Bitmap(sizing.Width, sizing.Height)
 		render	= Graphics.FromImage(img)
-		#render.TextRenderingHint = Text.TextRenderingHint.4
+		render.TextRenderingHint = hint
 		render.DrawString(text, font, SolidBrush(Color.Black), PointF(sizing.Width / 2, sizing.Height / 2), sf)
 		# Finalization.
 		return img.Clone(img.find_edges(Color.FromArgb(0)).widen(fields), img.PixelFormat)
 
-	[Extension] static def scan_ascii(ref_img as Bitmap, char_pools as Tuple[of string, string]):
+	[Extension] static def scan_ascii(ref_img as Bitmap, char_pools as Tuple[string, string]):
 		# Service objects preparation.		
 		ascii		= Text.StringBuilder(); noise = Text.StringBuilder()
 		ascii_gen	= EndlessString(char_pools.Item1)
@@ -65,7 +68,6 @@ class ASCII_logo():
 					noise_ln[x] = (noise_gen.next() if not	pixel_found else char(' ')) unless noise_gen is null
 				return Tuple.Create(String(ascii_ln), String(noise_ln))
 			scanlines.Add(Task.Run(scan_fn))
-			#Threading.Thread.Sleep(1)
 		# Results concatenation.
 		for scanline in scanlines:
 			ascii.AppendLine(scanline.Result.Item1)			
@@ -74,7 +76,7 @@ class ASCII_logo():
 		return Tuple.Create(ascii.ToString(), noise.ToString())
 
 	[Extension]
-	static def render_ascii(ascii as Tuple[of string,string], palette as Tuple[of Color,Color,Color], font as Font):
+	static def render_ascii(ascii as Tuple[string,string],palette as Tuple[Color,Color,Color],font as Font,hint as TRH):
 		# Service objects preparation.
 		sf		= StringFormat(StringFormatFlags.MeasureTrailingSpaces, Alignment: StringAlignment.Center,
 			LineAlignment: StringAlignment.Center)
@@ -89,6 +91,7 @@ class ASCII_logo():
 		render	= Graphics.FromImage(img)
 		# Primary render.
 		render.Clear(palette.Item2)
+		render.TextRenderingHint = hint
 		render.DrawString(ascii.Item1, font, SolidBrush(palette.Item1), loc, sf)
 		# Additional bg noise render.
 		if ascii.Item2:	render.DrawString(ascii.Item2, font, SolidBrush(palette.Item3), loc, sf)
@@ -158,9 +161,15 @@ class UI():
 			return SWM.SolidColorBrush(SWM.Color.FromArgb(src.A, src.R, src.G, src.B))
 		def brush2color(brush as SWM.SolidColorBrush):
 			return Color.FromArgb((src = brush.Color).A, src.R, src.G, src.B)
+
 		# Input event handlers.
 		fxcontrol = find_child('btnNoiseClr')
 		for id in ("iHMargin", "iVMargin"):	(find_child(id) as SW.Controls.TextBox).PreviewTextInput += num_filter
+		# Combobox filling.
+		for id in ("cSloganDraw", "cPatternDraw"):
+			items = (cb = find_child(id) as SW.Controls.ComboBox).Items
+			for name in Enum.GetNames(TRH): items.Add(name)
+			cb.SelectedIndex = 0
 		# Main click event handler.
 		find_button("btnRender").Click += def(sender as SW.Controls.Button):
 			try:
@@ -174,7 +183,9 @@ class UI():
 					text_color:	brush2color(fxcontrol.BorderBrush),
 					noise_color:ColorTranslator.FromHtml(fxcontrol.Content),
 					shape_font:	str2font(find_child('btnShapeFnt').Content),
-					fill_font:	str2font(find_child('btnFillFnt').Content)
+					fill_font:	str2font(find_child('btnFillFnt').Content),
+					shape_hint: Enum.Parse(TRH, (find_child("cSloganDraw") as SW.Controls.ComboBox).SelectedItem),
+					fill_hint:	Enum.Parse(TRH, (find_child("cPatternDraw") as SW.Controls.ComboBox).SelectedItem)
 				).begin().gauge_performance(sender).Save(find_child('iPath').Text as String)
 			except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
 			ensure: GC.Collect(); form.IsEnabled = true
@@ -235,7 +246,7 @@ class UI():
 			<Window 
 				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.05]=" Height="180" Width="400" WindowStartupLocation="CenterScreen"
+				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.05]=" Height="210" Width="400" WindowStartupLocation="CenterScreen"
 				Background="#1E1E1E">
 				<Window.Resources>
 					<Style TargetType="Button">
@@ -282,13 +293,16 @@ class UI():
 						<Setter Property="Foreground" Value="Gold" />
 						<Setter Property="Background" Value="Black" />
 					</Style>
+					<Style TargetType="Label">
+						<Setter Property="HorizontalAlignment" Value="Right" />
+					</Style>
 				</Window.Resources>
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition />
 						<RowDefinition Height="27"/>
 						<RowDefinition Height="27"/>
-						<RowDefinition Height="27"/>
+						<RowDefinition Height="54"/>
 						<RowDefinition Height="27"/>
 					</Grid.RowDefinitions>
 					<Grid.ColumnDefinitions>
@@ -296,17 +310,17 @@ class UI():
 						<ColumnDefinition Width="*"	/>
 						<ColumnDefinition Width="170"/>
 					</Grid.ColumnDefinitions>	
-					<Label HorizontalAlignment="Right" VerticalAlignment="Top" Content="Slogan:" Foreground="Coral"/>
+					<Label VerticalAlignment="Top" Content="Slogan:" Foreground="Coral"/>
 						<TextBox	VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="1" x:Name="iSlogan"
-							Margin="0,3,5,6" Text="I am error" AcceptsReturn="True" TextWrapping="Wrap" />
+							Margin="0,2,5,6" Text="I am error" AcceptsReturn="True" TextWrapping="Wrap" />
 						<Button		VerticalAlignment="Top" Grid.Row="0" Grid.Column="2" x:Name="btnShapeFnt" 
 							Margin="0,3,5,3" Height="21" Content="Sylfaen: 20" />
-					<Label HorizontalAlignment="Right" Content="ASCII:" Grid.Row="1" Foreground="Coral"/>
+					<Label Content="ASCII:" Grid.Row="1" Foreground="Coral"/>
 						<TextBox	Grid.Row="1" Grid.Column="1" x:Name="iASCII"		Margin="0,3,5,3" 
 							Text="▓▒░▒" />
 						<Button		Grid.Row="1" Grid.Column="2" x:Name="btnFillFnt"	Margin="0,3,5,3" Height="21"
 							Content="Consolas: 7" />
-					<Label HorizontalAlignment="Right" Content="Noise:" Grid.Row="2" Foreground="Coral"/>
+					<Label Content="Noise:" Grid.Row="2" Foreground="Coral"/>
 						<TextBox	Grid.Row="2" Grid.Column="1" x:Name="iNoise"		Margin="0,3,5,3" 
 							Text="1101000101001100100100" />
 						<Button		Grid.Row="2" Grid.Column="2" x:Name="btnNoiseClr"	Margin="0,3,5,3" Height="21" 
@@ -361,7 +375,7 @@ class UI():
 							 	</Style>
 							</Button.Style>
 						</Button>
-					<Label HorizontalAlignment="Right" Content="Out:" Grid.Row="4" Foreground="Coral"/>
+					<Label Content="Out:" Grid.Row="4" Foreground="Coral"/>
 						<TextBox	Grid.Row="4" Grid.Column="1" x:Name="iPath" Margin="0,3,5,3" Text="Output.png" />
 						<Button		 VerticalAlignment="Bottom" Grid.Row="4" Grid.Column="2" x:Name="btnRender"
 						  	Margin="0,0,5,3" Content="Render !" Height = "21" />
@@ -372,10 +386,20 @@ class UI():
 							<ColumnDefinition Width="81"/>
 							<ColumnDefinition Width="*"/>
 						</Grid.ColumnDefinitions>
-						<Label Content="Horiz margin:" Foreground="LightCoral" Grid.Column="0"/>
-						<TextBox x:Name="iHMargin" Text="5" Grid.Column="1" Margin="0,3,5,3" Foreground="DarkOrange"/>
-						<Label Content="Vert margin:" Foreground="LightCoral" Grid.Column="2"/>
-						<TextBox x:Name="iVMargin" Text="3" Grid.Column="3" Margin="0,3,5,3" Foreground="DarkOrange"/>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="27"/>
+							<RowDefinition Height="27"/>
+						</Grid.RowDefinitions>
+						<Label Content="Slogan draw:" Grid.Column="0" Foreground="LightCoral"/>
+							<ComboBox x:Name="cSloganDraw" Grid.Column="1" Margin="0,3,5,3" Background="Black"/>
+						<Label Content="Pattern draw:" Grid.Column="2" Foreground="LightCoral"/>
+							<ComboBox x:Name="cPatternDraw" Grid.Column="3" Margin="0,3,5,3" Background="Black"/>
+						<Label Content="Horiz margin:" Foreground="LightCoral" Grid.Column="0" Grid.Row = "1"/>
+							<TextBox x:Name="iHMargin" Text="5" Grid.Column="1" Grid.Row = "1" Margin="0,3,5,3"
+								Foreground="DarkOrange"/>
+						<Label Content="Vert margin:" Foreground="LightCoral" Grid.Column="2" Grid.Row = "1"/>
+							<TextBox x:Name="iVMargin" Text="3" Grid.Column="3" Grid.Row = "1" Margin="0,3,5,3"
+								Foreground="DarkOrange"/>
 					</Grid>
 				</Grid>
 			</Window>
