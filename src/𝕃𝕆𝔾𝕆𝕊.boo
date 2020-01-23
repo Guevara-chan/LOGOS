@@ -1,5 +1,5 @@
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.05 #
+# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.04 #
 # Developed in 2020 by Victoria Guevara #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
@@ -157,7 +157,7 @@ class UI():
 		fxcontrol = find_child('btnNoiseClr')
 		for id in ("iHMargin", "iVMargin"):	(find_child(id) as SW.Controls.TextBox).PreviewTextInput += num_filter
 		# Main click event handler.
-		render = def():
+		find_button("btnRender").Click += def(sender as SW.Controls.Button):
 			try:
 				form.IsEnabled = false
 				ASCII_logo(
@@ -171,9 +171,9 @@ class UI():
 					shape_font:	str2font(find_child('btnShapeFnt').Content),
 					fill_font:	str2font(find_child('btnFillFnt').Content)
 				).done().Save(find_child('iPath').Text as String)
+				form.IsEnabled = true
 			except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
-			ensure: GC.Collect(); form.IsEnabled = true
-		find_button("btnRender").Click		+= {e|Task.Run(render)}
+			ensure: GC.Collect()
 		# Aux event handlers.
 		find_button('btnShapeFnt').Click	+= {e|
 			fxcontrol.Background = color2brush(askfont('btnShapeFnt', brush2color(fxcontrol.Background), false))}
@@ -221,7 +221,7 @@ class UI():
 			<Window 
 				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.05]=" Height="180" Width="400" WindowStartupLocation="CenterScreen"
+				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.04]=" Height="180" Width="400" WindowStartupLocation="CenterScreen"
 				Background="#1E1E1E">
 				<Window.Resources>
 					<Style TargetType="Button">
