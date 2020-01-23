@@ -29,6 +29,9 @@ class ASCII_logo():
 		return slogan.render_text(shape_font, fields).scan_ascii(Tuple.Create(text_pool, noise_pool))\
 			.render_ascii(Tuple.Create(text_color, bg_color, noise_color), fill_font)
 
+	def init():
+		return Task.Run(done)
+
 	[Extension] static def render_text(text as string, font as Font, fields as Size):
 		# Service objects preparation.
 		sf		= StringFormat(Alignment: StringAlignment.Center, LineAlignment: StringAlignment.Center)
@@ -170,10 +173,9 @@ class UI():
 					noise_color:ColorTranslator.FromHtml(fxcontrol.Content),
 					shape_font:	str2font(find_child('btnShapeFnt').Content),
 					fill_font:	str2font(find_child('btnFillFnt').Content)
-				).done().Save(find_child('iPath').Text as String)
-				form.IsEnabled = true
+				).init().Result.Save(find_child('iPath').Text as String)
 			except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
-			ensure: GC.Collect()
+			ensure: GC.Collect(); form.IsEnabled = true
 		# Aux event handlers.
 		find_button('btnShapeFnt').Click	+= {e|
 			fxcontrol.Background = color2brush(askfont('btnShapeFnt', brush2color(fxcontrol.Background), false))}
