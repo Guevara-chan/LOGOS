@@ -29,7 +29,7 @@ class ASCII_logo():
 		return slogan.render_text(shape_font, fields).scan_ascii(Tuple.Create(text_pool, noise_pool))\
 			.render_ascii(Tuple.Create(text_color, bg_color, noise_color), fill_font)
 
-	def init():
+	def begin():
 		return Task.Run(done)
 
 	[Extension] static def render_text(text as string, font as Font, fields as Size):
@@ -173,7 +173,7 @@ class UI():
 					noise_color:ColorTranslator.FromHtml(fxcontrol.Content),
 					shape_font:	str2font(find_child('btnShapeFnt').Content),
 					fill_font:	str2font(find_child('btnFillFnt').Content)
-				).init().Result.Save(find_child('iPath').Text as String)
+				).begin().gauge_performance(sender).Save(find_child('iPath').Text as String)
 			except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
 			ensure: GC.Collect(); form.IsEnabled = true
 		# Aux event handlers.
@@ -202,6 +202,15 @@ class UI():
 
 	def num_filter(sender, e as Windows.Input.TextCompositionEventArgs):
 		e.Handled = Text.RegularExpressions.Regex("[^0-9]").IsMatch(e.Text)		
+
+	[Extension] static def gauge_performance[of T](task as Task[T], counter as SW.Controls.Button):
+		start	= DateTime.Now
+		backup	= counter.Content
+		while not task.IsCompleted:
+			counter.Content = (DateTime.Now - start).ToString("mm\\:ss\\.ff")
+			Application.DoEvents()
+		counter.Content = backup
+		return task.Result
 
 	[Extension] static def font2str(fnt as Font):
 		idx = 1
