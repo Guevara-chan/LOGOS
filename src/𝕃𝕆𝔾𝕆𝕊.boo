@@ -157,7 +157,7 @@ class UI():
 		fxcontrol = find_child('btnNoiseClr')
 		for id in ("iHMargin", "iVMargin"):	(find_child(id) as SW.Controls.TextBox).PreviewTextInput += num_filter
 		# Main click event handler.
-		find_button("btnRender").Click += def(sender as SW.Controls.Button):
+		render = def():
 			try:
 				form.IsEnabled = false
 				ASCII_logo(
@@ -173,6 +173,7 @@ class UI():
 				).done().Save(find_child('iPath').Text as String)
 			except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
 			ensure: GC.Collect(); form.IsEnabled = true
+		find_button("btnRender").Click		+= {e|Task.Run(render)}
 		# Aux event handlers.
 		find_button('btnShapeFnt').Click	+= {e|
 			fxcontrol.Background = color2brush(askfont('btnShapeFnt', brush2color(fxcontrol.Background), false))}
