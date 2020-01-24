@@ -4,6 +4,7 @@
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
 import System
+import System.Linq
 import System.Drawing
 import System.Windows as SW
 import System.Windows.Forms
@@ -26,11 +27,13 @@ class ASCII_logo():
 	public slogan								= "I am error"
 	public shape_hint							= TRH.SystemDefault
 	public fill_hint							= TRH.SystemDefault
+	public precise_scan							= true
 
 	# --Methods goes here.
 	def done():
-		return slogan.render_text(shape_font, fields, shape_hint).scan_ascii(Tuple.Create(text_pool, noise_pool))\
-			.render_ascii(Tuple.Create(text_color, bg_color, noise_color), fill_font, fill_hint)
+		return slogan.render_text(shape_font, fields, shape_hint)\
+						.scan_ascii(Tuple.Create(text_pool, noise_pool), precise_scan)\
+						.render_ascii(Tuple.Create(text_color, bg_color, noise_color), fill_font, fill_hint)
 
 	def begin():
 		return Task.Run(done)
@@ -50,24 +53,25 @@ class ASCII_logo():
 		# Finalization.
 		return img.Clone(img.find_edges(Color.FromArgb(0)).widen(fields), img.PixelFormat)
 
-	[Extension] static def scan_ascii(ref_img as Bitmap, char_pools as Tuple[string, string]):
+	[Extension] static def scan_ascii(ref_img as Bitmap, char_pools as Tuple[string, string], precise as bool):
 		# Service objects preparation.		
 		ascii		= Text.StringBuilder(); noise = Text.StringBuilder()
 		ascii_gen	= EndlessString(char_pools.Item1)
 		noise_gen	= EndlessString(char_pools.Item2) if char_pools.Item2
 		scanlines	= Collections.Generic.List[of Task[Tuple[string, string]]]()
 		img_width	= ref_img.Width
+		spaces		= Enumerable.Repeat(char(' '), img_width).ToArray()
 		pixels as (Int32), row_len as int = ref_img.pixel_arr()
 		# Reference image to ASCII conversion.
 		for y in range(ref_img.Height):
 			scan_fn = def():
-				ascii_ln = array(char, img_width); noise_ln = array(char, img_width)				
+				ascii_ln as (char) = spaces.Clone(); noise_ln as (char) = spaces.Clone()
 				for x in range(img_width):
-					pixel_found = pixels[y * row_len + x] != 0 # Non-null -> found.
-					ascii_ln[x] = (ascii_gen.next() if pixel_found else char(' '))
-					noise_ln[x] = (noise_gen.next() if not	pixel_found else char(' ')) unless noise_gen is null
+					if pixels[y * row_len + x] != 0: ascii_ln[x] = ascii_gen.next()
+					elif noise_gen: noise_ln[x] = noise_gen.next()
 				return Tuple.Create(String(ascii_ln), String(noise_ln))
-			scanlines.Add(Task.Run(scan_fn))
+			scanlines.Add(last_task = Task.Run(scan_fn))
+			if precise: last_task.Wait()
 		# Results concatenation.
 		for scanline in scanlines:
 			ascii.AppendLine(scanline.Result.Item1)			
@@ -185,7 +189,8 @@ class UI():
 					shape_font:	str2font(find_child('btnShapeFnt').Content),
 					fill_font:	str2font(find_child('btnFillFnt').Content),
 					shape_hint: Enum.Parse(TRH, (find_child("cSloganDraw") as SW.Controls.ComboBox).SelectedItem),
-					fill_hint:	Enum.Parse(TRH, (find_child("cPatternDraw") as SW.Controls.ComboBox).SelectedItem)
+					fill_hint:	Enum.Parse(TRH, (find_child("cPatternDraw") as SW.Controls.ComboBox).SelectedItem),
+					precise_scan: true
 				).begin().gauge_performance(sender).Save(find_child('iPath').Text as String)
 			except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
 			ensure: GC.Collect(); form.IsEnabled = true
