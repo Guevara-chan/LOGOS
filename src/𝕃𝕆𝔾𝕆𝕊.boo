@@ -287,6 +287,23 @@ class UI():
 									</BeginStoryboard>
 								</Trigger.ExitActions>
 							</Trigger>
+							<Trigger Property="IsEnabled" Value="False">
+								<Trigger.EnterActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.5"
+												Duration="0:0:0" />
+										</Storyboard>
+									</BeginStoryboard>
+								</Trigger.EnterActions>
+								<Trigger.ExitActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0" />
+										</Storyboard>
+									</BeginStoryboard>
+								</Trigger.ExitActions>
+							</Trigger>
 						</Style.Triggers>
 					</Style>
 					<LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
@@ -297,7 +314,6 @@ class UI():
 							</GradientStopCollection>
 					 	</GradientBrush.GradientStops>
 					</LinearGradientBrush>
-					<SolidColorBrush x:Key="BBrush" Color="Red" />
 					<ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
 						<Grid>
 							<Grid.ColumnDefinitions>
