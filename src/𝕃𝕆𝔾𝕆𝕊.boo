@@ -323,10 +323,11 @@ class UI():
 						 		<ControlTemplate TargetType="ComboBox">
 						  			<Grid>
 										<ToggleButton Name="ToggleButton" Grid.Column="2" Focusable="false" 
-											Template="{StaticResource ComboBoxToggleButton}" ClickMode="Press" 							 				
+											Template="{StaticResource ComboBoxToggleButton}" ClickMode="Press"
 							 				IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,
 							 					RelativeSource={RelativeSource TemplatedParent}}" 
-							 				BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}"/>
+							 				BorderBrush="{TemplateBinding BorderBrush}" 
+							 				Background="{TemplateBinding Background}"/>
 						  				<ContentPresenter
 											Name="ContentSite" IsHitTestVisible="False" Margin="3,3,23,3"
 											VerticalAlignment="Center" HorizontalAlignment="Left" 
@@ -373,6 +374,23 @@ class UI():
 												Duration="0:0:0.2" />
 											<ColorAnimation	Storyboard.TargetProperty="Background.Color"
 												Duration="0:0:0.2" />
+										</Storyboard>
+									</BeginStoryboard>
+								</Trigger.ExitActions>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="False">
+								<Trigger.EnterActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.5"
+												Duration="0:0:0" />
+										</Storyboard>
+									</BeginStoryboard>
+								</Trigger.EnterActions>
+								<Trigger.ExitActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0" />
 										</Storyboard>
 									</BeginStoryboard>
 								</Trigger.ExitActions>
