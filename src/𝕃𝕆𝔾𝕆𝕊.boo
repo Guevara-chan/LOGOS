@@ -1,5 +1,5 @@
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.05 #
+# 𝕃𝕆𝔾𝕆𝕊 text-2-ASCIIart renderer v0.06 #
 # Developed in 2020 by Victoria Guevara #
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
@@ -190,7 +190,7 @@ class UI():
 					fill_font:	str2font(find_child('btnFillFnt').Content),
 					shape_hint: Enum.Parse(TRH, (find_child("cSloganDraw") as SW.Controls.ComboBox).SelectedItem),
 					fill_hint:	Enum.Parse(TRH, (find_child("cPatternDraw") as SW.Controls.ComboBox).SelectedItem),
-					precise_scan: true
+					precise_scan: not find_child('cbFastRender').IsChecked
 				).begin().gauge_performance(sender).Save(find_child('iPath').Text as String)
 			except ex: MessageBox.Show("FAULT:: $(ex.Message)", form.Title, 0, MessageBoxIcon.Error)
 			ensure: GC.Collect(); form.IsEnabled = true
@@ -251,7 +251,7 @@ class UI():
 			<Window 
 				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.05]=" Height="204" Width="400" WindowStartupLocation="CenterScreen"
+				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.06]=" Height="204" Width="400" WindowStartupLocation="CenterScreen"
 				Background="#1E1E1E">
 				<Window.Resources>
 					<Style TargetType="Button">
@@ -418,6 +418,46 @@ class UI():
 							</Trigger>
 						</Style.Triggers>
 					</Style>
+					<Style x:Key="{x:Type CheckBox}" TargetType="{x:Type CheckBox}">
+            			<Setter Property="SnapsToDevicePixels" Value="true"/>
+            			<Setter Property="OverridesDefaultStyle" Value="true"/>
+            			<Setter Property="Template">
+                			<Setter.Value>
+                    			<ControlTemplate TargetType="{x:Type CheckBox}">
+                        			<BulletDecorator Background="Transparent">
+                            			<BulletDecorator.Bullet>
+                                			<Border x:Name="Border" Width="13" Height="13" CornerRadius="0" 
+                                				Background="Black" BorderThickness="1" BorderBrush="#FFABADB3">
+                                				<Path Width="7" Height="7" x:Name="CheckMark" 
+                                					SnapsToDevicePixels="False" Stroke="Orange" StrokeThickness="2"
+                                					Data="M 0 0 L 7 7 M 0 7 L 7 0" />
+                                			</Border>
+                            			</BulletDecorator.Bullet>
+                            			<ContentPresenter Margin="4,0,0,0" VerticalAlignment="Center" 
+                            				HorizontalAlignment="Left" RecognizesAccessKey="True"/>
+                        			</BulletDecorator>
+									<ControlTemplate.Triggers>
+										<Trigger Property="IsChecked" Value="false">
+											<Setter TargetName="CheckMark" Property="Visibility" Value="Collapsed"/>
+										</Trigger>
+										<Trigger Property="IsChecked" Value="{x:Null}">
+											<Setter TargetName="CheckMark" Property="Data" Value="M 0 7 L 7 0" />
+										</Trigger>
+										<Trigger Property="IsMouseOver" Value="true">
+											<Setter TargetName="Border" Property="BorderBrush" Value="CornflowerBlue" />
+										</Trigger>
+										<Trigger Property="IsPressed" Value="true">
+											<Setter TargetName="Border" Property="Background" Value="#1E1E1E" />
+										</Trigger>
+										<Trigger Property="IsEnabled" Value="false">
+											<Setter TargetName="Border" Property="BorderBrush" Value="DimGray" />
+											<Setter Property="Foreground" Value="Gray"/>
+										</Trigger>
+									</ControlTemplate.Triggers>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
 					<Style TargetType="TextBox">
 						<Setter Property="Foreground" Value="Gold" />
 						<Setter Property="Background" Value="Black" />
@@ -522,7 +562,8 @@ class UI():
 							 	</Style>
 							</Button.Style>
 						</Button>
-					<Label Content="Out:" Grid.Row="4" Foreground="Coral"/>
+					<CheckBox x:Name="cbFastRender" Content="Fast:" Grid.Row="4" Foreground="Coral" Margin="0,0,2,0"
+						HorizontalAlignment="Right" VerticalAlignment="Center" Background="Black" />
 						<TextBox	Grid.Row="4" Grid.Column="1" x:Name="iPath" Margin="0,3,5,3" Text="Output.png" />
 						<Button		 VerticalAlignment="Bottom" Grid.Row="4" Grid.Column="2" x:Name="btnRender"
 						  	Margin="0,0,5,3" Content="Render !" Height = "21" />
