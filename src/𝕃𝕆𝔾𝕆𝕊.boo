@@ -326,7 +326,7 @@ class UI():
 											Template="{StaticResource ComboBoxToggleButton}" ClickMode="Press" 							 				
 							 				IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,
 							 					RelativeSource={RelativeSource TemplatedParent}}" 
-							 					BorderBrush="{TemplateBinding BorderBrush}"/>
+							 				BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}"/>
 						  				<ContentPresenter
 											Name="ContentSite" IsHitTestVisible="False" Margin="3,3,23,3"
 											VerticalAlignment="Center" HorizontalAlignment="Left" 
