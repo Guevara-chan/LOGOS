@@ -102,7 +102,7 @@ class ASCII_logo():
 		# Service objects preparation.
 		img_width	= img.Width
 		img_height	= img.Height
-		mark        = bg_color.ToArgb()
+		mark		= bg_color.ToArgb()
 		scanlines	= Collections.Generic.List[of Task[(int)]]()
 		pixels as (Int32), row_len as int	= img.pixel_arr()
 		vl_edge, vr_edge, hu_edge, hb_edge	= (img_width, 0, img_height, 0)
@@ -154,6 +154,7 @@ class ASCII_logo():
 # -------------------- #
 class UI():
 	def constructor():
+		print find_child('iSlogan').BorderBrush
 		# Aux functions.
 		def find_button(id as string) as SW.Controls.Button:
 			return find_child(id)
@@ -246,7 +247,7 @@ class UI():
 			<Window 
 				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.05]=" Height="210" Width="400" WindowStartupLocation="CenterScreen"
+				Title="=[𝕃𝕆𝔾𝕆𝕊 v0.05]=" Height="204" Width="400" WindowStartupLocation="CenterScreen"
 				Background="#1E1E1E">
 				<Window.Resources>
 					<Style TargetType="Button">
@@ -289,6 +290,92 @@ class UI():
 							</Trigger>
 						</Style.Triggers>
 					</Style>
+					<LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
+						<GradientBrush.GradientStops>
+							<GradientStopCollection>
+								<GradientStop Color="#1E1E1E" Offset="0.0"/>
+								<GradientStop Color="DimGray" Offset="1.0"/>
+						 </GradientStopCollection>
+					  </GradientBrush.GradientStops>
+					</LinearGradientBrush>
+					<SolidColorBrush x:Key="WindowBackgroundBrush" Color="#EE000000" />
+					<ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition />
+								<ColumnDefinition Width="20" />
+							</Grid.ColumnDefinitions>
+							<Border x:Name="Border" Grid.ColumnSpan="2" BorderBrush="#FFABADB3"
+				  				Background="{StaticResource NormalBrush}"  BorderThickness="1" />
+							<Border Grid.Column="0" CornerRadius="2,0,0,2" Margin="1" 
+								Background="{StaticResource WindowBackgroundBrush}" BorderThickness="0,0,1,0" />
+							<Path x:Name="Arrow" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+				  				Data="M 0 0 L 4 4 L 8 0 Z"/>
+						</Grid>
+					</ControlTemplate>
+					<ControlTemplate x:Key="ComboBoxTextBox" TargetType="TextBox">
+						<Border x:Name="PART_ContentHost" Focusable="False" Background="{TemplateBinding Background}"/>
+					</ControlTemplate>
+					<Style x:Key="{x:Type ComboBox}" TargetType="ComboBox">
+					  <Setter Property="Template">
+						<Setter.Value>
+						 <ControlTemplate TargetType="ComboBox">
+						  <Grid>
+							<ToggleButton 
+							 Name="ToggleButton" 
+							 Template="{StaticResource ComboBoxToggleButton}" 
+							 Grid.Column="2" 
+							 Focusable="false"
+							 IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}"
+							 ClickMode="Press">
+						  </ToggleButton>
+						  <ContentPresenter
+							Name="ContentSite"
+							IsHitTestVisible="False" 
+							Margin="3,3,23,3"
+							VerticalAlignment="Center"
+							Content="{TemplateBinding ComboBox.SelectionBoxItem}"
+							ContentTemplate="{TemplateBinding ComboBox.SelectionBoxItemTemplate}"
+							ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+							HorizontalAlignment="Left" />
+							<TextBox x:Name="PART_EditableTextBox"
+							 Style="{x:Null}" 
+							 Template="{StaticResource ComboBoxTextBox}" 
+							 HorizontalAlignment="Left" 
+							 VerticalAlignment="Center" 
+							 Margin="3,3,23,3"
+							 Focusable="True" 
+							 Background="Transparent"
+							 Visibility="Hidden"
+							 IsReadOnly="{TemplateBinding IsReadOnly}"/>
+						  <Popup 
+							Name="Popup"
+							Placement="Bottom"
+							IsOpen="{TemplateBinding IsDropDownOpen}"
+							AllowsTransparency="True" 
+							Focusable="False"
+							PopupAnimation="Slide">
+							<Grid 
+							  Name="DropDown"
+							  SnapsToDevicePixels="True"				
+							  MinWidth="{TemplateBinding ActualWidth}"
+							  MaxHeight="{TemplateBinding MaxDropDownHeight}">
+								<Border 
+								x:Name="DropDownBorder"
+								Background="{StaticResource WindowBackgroundBrush}"
+								BorderThickness="1"/>
+								<ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+								<StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+								</ScrollViewer>
+							  </Grid>
+							 </Popup>
+							</Grid>
+							</ControlTemplate>
+						  </Setter.Value>
+						 </Setter>
+						<Style.Triggers>
+						</Style.Triggers>
+						</Style>
 					<Style TargetType="TextBox">
 						<Setter Property="Foreground" Value="Gold" />
 						<Setter Property="Background" Value="Black" />
@@ -312,7 +399,7 @@ class UI():
 					</Grid.ColumnDefinitions>	
 					<Label VerticalAlignment="Top" Content="Slogan:" Foreground="Coral"/>
 						<TextBox	VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="1" x:Name="iSlogan"
-							Margin="0,2,5,6" Text="I am error" AcceptsReturn="True" TextWrapping="Wrap" />
+							Margin="0,3,5,6" Text="I am error" AcceptsReturn="True" TextWrapping="Wrap" />
 						<Button		VerticalAlignment="Top" Grid.Row="0" Grid.Column="2" x:Name="btnShapeFnt" 
 							Margin="0,3,5,3" Height="21" Content="Sylfaen: 20" />
 					<Label Content="ASCII:" Grid.Row="1" Foreground="Coral"/>
@@ -391,9 +478,9 @@ class UI():
 							<RowDefinition Height="27"/>
 						</Grid.RowDefinitions>
 						<Label Content="Slogan draw:" Grid.Column="0" Foreground="LightCoral"/>
-							<ComboBox x:Name="cSloganDraw" Grid.Column="1" Margin="0,3,5,3" Background="Black"/>
+							<ComboBox x:Name="cSloganDraw" Grid.Column="1" Margin="0,3,5,3" Foreground="Coral"/>
 						<Label Content="Pattern draw:" Grid.Column="2" Foreground="LightCoral"/>
-							<ComboBox x:Name="cPatternDraw" Grid.Column="3" Margin="0,3,5,3" Background="Black"/>
+							<ComboBox x:Name="cPatternDraw" Grid.Column="3" Margin="0,3,5,3" Foreground="Coral"/>
 						<Label Content="Horiz margin:" Foreground="LightCoral" Grid.Column="0" Grid.Row = "1"/>
 							<TextBox x:Name="iHMargin" Text="5" Grid.Column="1" Grid.Row = "1" Margin="0,3,5,3"
 								Foreground="DarkOrange"/>
