@@ -495,6 +495,24 @@ class UI():
 												</BeginStoryboard>
 											</Trigger.ExitActions>
 										</Trigger>
+										<Trigger Property="IsEnabled" Value="False">
+											<Trigger.EnterActions>
+												<BeginStoryboard>
+													<Storyboard>
+														<DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.5"
+															Duration="0:0:0" />
+													</Storyboard>
+												</BeginStoryboard>
+											</Trigger.EnterActions>
+											<Trigger.ExitActions>
+												<BeginStoryboard>
+													<Storyboard>
+														<DoubleAnimation Storyboard.TargetProperty="Opacity"
+															Duration="0:0:0" />
+													</Storyboard>
+												</BeginStoryboard>
+											</Trigger.ExitActions>
+										</Trigger>
 									</Style.Triggers>
 							 	</Style>
 							</Button.Style>
