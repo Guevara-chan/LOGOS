@@ -310,7 +310,7 @@ class UI():
 							<Border Grid.Column="0" CornerRadius="2,0,0,2" Margin="1" 
 								Background="{StaticResource WindowBackgroundBrush}" BorderThickness="0,0,1,0" />
 							<Path x:Name="Arrow" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-				  				Data="M 0 0 L 4 4 L 8 0 Z"/>
+				  				Fill="AntiqueWhite" Data="M 0 0 L 4 4 L 8 0 Z"/>
 						</Grid>
 					</ControlTemplate>
 					<ControlTemplate x:Key="ComboBoxTextBox" TargetType="TextBox">
