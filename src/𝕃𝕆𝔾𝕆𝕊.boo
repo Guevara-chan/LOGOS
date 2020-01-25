@@ -481,7 +481,7 @@ class UI():
 					</Grid.ColumnDefinitions>	
 					<Label VerticalAlignment="Top" Content="Slogan:" Foreground="Coral"/>
 						<TextBox	VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="1" x:Name="iSlogan"
-							Margin="0,3,5,6" Text="I am error" AcceptsReturn="True" TextWrapping="Wrap" />
+							Margin="0,3,5,3" Text="I am error" AcceptsReturn="True" TextWrapping="Wrap" />
 						<Button		VerticalAlignment="Top" Grid.Row="0" Grid.Column="2" x:Name="btnShapeFnt" 
 							Margin="0,3,5,3" Height="21" Content="Sylfaen: 20" />
 					<Label Content="ASCII:" Grid.Row="1" Foreground="Coral"/>
